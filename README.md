@@ -24,11 +24,10 @@ Klient:
 - możliwość składania zamówień i ofert,
 - wgląd w dostępne książki (jeszcze nie zamówione),
 - rejestruje się w systemie (podaje: imię, nazwisko, email i swoją klasę),
-- może odebrać 
+- może odebrać pieniądze ze sprzedanych książek
 
 
 
 
 
-
-https://github.com/wsrtka/DBook/issues/1#issue-610974530
+![ER](https://user-images.githubusercontent.com/58508596/80842616-5ad5b680-8c02-11ea-85b6-f5fde72e96c3.png)

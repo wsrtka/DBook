@@ -27,4 +27,4 @@ Klient:
 - rejestruje się w systemie (podaje: imię, nazwisko, email i swoją klasę),
 - może odebrać pieniądze ze sprzedanych książek/odebrać niesprzedane książki
 
-![ER](https://user-images.githubusercontent.com/58508596/80842616-5ad5b680-8c02-11ea-85b6-f5fde72e96c3.png)
+![Untitled Diagram](https://user-images.githubusercontent.com/58508596/80869083-8f974b80-8c9e-11ea-8f2f-71b61556f968.png)

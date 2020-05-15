@@ -9,11 +9,6 @@ public class Employee extends User{
         this.dBookApplication = dBookApplication;
     }
 
-    @Override
-    public Integer calculateInvoice(Integer invoiceID){
-        return 0;
-    }
-
     public void listSomeoneInvoices(Integer userID){//wylistowuje faktury danego uzytkownika
         ArrayList<Integer> invoicesIDList = new ArrayList(this.dBookApplication.getUserArrayList().get(userID).getUsersInvoices().entrySet());
         for (Integer invoiceID: invoicesIDList) {
@@ -33,4 +28,16 @@ public class Employee extends User{
             System.out.println(user.toString()+";");
         }
     }
+
+    @Override
+    public Integer calculateInvoice(Integer userID){
+        ArrayList<Integer> invoicesIDList = new ArrayList(this.dBookApplication.getUserArrayList().get(userID).getUsersOffers().entrySet());
+        Integer result = 0;
+        for (Integer invoiceID: invoicesIDList) {
+            result += this.dBookApplication.getUserArrayList().get(userID).calculateInvoice(invoiceID);
+        }
+        System.out.println(result);
+        return result;
+    }
+
 }

@@ -30,14 +30,39 @@ public class Employee extends User{
     }
 
     @Override
-    public Integer calculateInvoice(Integer userID){
+    public Integer calculateInvoice(Integer userID){ // ma zwrocic ile ma dany uzytkownik ma zaplacic
         ArrayList<Integer> invoicesIDList = new ArrayList(this.dBookApplication.getUserArrayList().get(userID).getUsersOffers().entrySet());
         Integer result = 0;
         for (Integer invoiceID: invoicesIDList) {
             result += this.dBookApplication.getUserArrayList().get(userID).calculateInvoice(invoiceID);
         }
-        System.out.println(result);
         return result;
+    }
+
+    public void calculateOffer(Integer userID){ //ma zwrocic ile danemu uzytkownikowi mamy wydac pieniedzy
+
+    }
+
+    public void listBooksToReturn(Integer userID){ //listuje ksiązki, które mamy zwrócić klientowi
+
+    }
+
+    public void listOfferBooks(Integer offerID){ //wypisuje ksiazki, ktore maja bycprzyniesione przez klienta
+
+    }
+
+    public void listInvoiceBooks(Integer invoiceID){ //wypisuje ksiazki, ktore maja byc przyniesione dla klienta
+
+    }
+    public void listOrderBooks(Integer orderID){// wypisuje ksiazki, ktore maja byc przyniesione przez klienta
+
+    }
+    public void acceptInvoice(Integer invoiceID, ArrayList<Book> acceptedBooks){// akceptuje zamowienie (zostalo zaplacone) i od razu usuwa te ksiazki z zamowienia, ktore nie zostaly kupione na miejscu
+
+    }
+
+    public void acceptOffer(Integer offerID, ArrayList<Book> acceptedBooks){//akceptuje zamowienie (ksiazki zostaly przyniesione) i od razu usuwa te ksiazki z zamowienia, ktore nie zostaly przyjete/przyniesione
+
     }
 
 }

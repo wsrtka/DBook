@@ -65,4 +65,19 @@ public class Employee extends User{
 
     }
 
+    public void deleteUnacceptedOffers(){
+
+    }
+
+    public void deleteUnacceptedInvoices(){
+
+    }
+
+    public void deleteBookInfo(Integer bookInfoID){
+        
+    }
+
+    public void deleteUser(Integer userID){ // czy potrzebne?
+
+    }
 }

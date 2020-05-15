@@ -16,6 +16,14 @@ public class User {
         this.usersInvoices = new HashMap<>();
     }
 
+    public HashMap<Integer, Invoice> getUsersInvoices() {
+        return usersInvoices;
+    }
+
+    public HashMap<Integer, Offer> getUsersOffers() {
+        return usersOffers;
+    }
+
     public void addOffer(ArrayList<Book> books){
         Integer offerID = this.idGenerator.getNextID();
         Offer offer = new Offer(offerID, books);
@@ -33,14 +41,14 @@ public class User {
         new BookInfo(bookInfoID,title, price, type, publisher, subject, semester, author, isbn);
     }
 
-    public void listInvoices(){
+    public void listMyInvoices(){
         ArrayList<Integer> invoicesIDList = new ArrayList(usersInvoices.entrySet());
         for (Integer invoiceID: invoicesIDList) {
             System.out.println(invoiceID+";");
         }
     }
 
-    public void listOffers(){
+    public void listMyOffers(){
         ArrayList<Offer> offersIDList = new ArrayList(usersOffers.entrySet());
         for(Offer offerID : offersIDList){
             System.out.println(offerID + ";");

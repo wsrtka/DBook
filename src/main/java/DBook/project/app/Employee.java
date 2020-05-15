@@ -3,9 +3,10 @@ package DBook.project.app;
 import java.util.ArrayList;
 
 public class Employee extends User{
-
-    public Employee(){
+    private DBookApplication dBookApplication;
+    public Employee(DBookApplication dBookApplication){
         super();
+        this.dBookApplication = dBookApplication;
     }
 
     @Override
@@ -13,13 +14,23 @@ public class Employee extends User{
         return 0;
     }
 
-    @Override
-    public void listInvoices(Integer userID){
-
-        ArrayList<Integer> invoicesIDList = new ArrayList(usersInvoices.entrySet());
+    public void listSomeoneInvoices(Integer userID){//wylistowuje faktury danego uzytkownika
+        ArrayList<Integer> invoicesIDList = new ArrayList(this.dBookApplication.getUserArrayList().get(userID).getUsersInvoices().entrySet());
         for (Integer invoiceID: invoicesIDList) {
             System.out.println(invoiceID+";");
         }
     }
 
+    public void listSomeoneOffers(Integer userID){//wylistowuje oferty danego uzytkownika
+        ArrayList<Integer> invoicesIDList = new ArrayList(this.dBookApplication.getUserArrayList().get(userID).getUsersOffers().entrySet());
+        for (Integer invoiceID: invoicesIDList) {
+            System.out.println(invoiceID+";");
+        }
+    }
+
+    public void listAllUsers(){//wylistowuje wszystkich uzytkownikow
+        for(User user:this.dBookApplication.getUserArrayList()){
+            System.out.println(user.toString()+";");
+        }
+    }
 }

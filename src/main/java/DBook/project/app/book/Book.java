@@ -14,7 +14,7 @@ public class Book implements Transactionable {
     private float price;
     private BookType type;
     private String publisher;
-    private int semester;
+    private Integer semester;
     private String author;
     private String isbn;
 
@@ -23,7 +23,7 @@ public class Book implements Transactionable {
             float price,
             BookType type,
             String publisher,
-            int semester,
+            Integer semester,
             String author,
             String isbn
             ){
@@ -46,22 +46,48 @@ public class Book implements Transactionable {
         this.bookID = idGen.getNextID();
     }
 
-    public Integer getBookID() {
-        return bookID;
-    }
-
     @Override
     public void addToDB(Transaction tx) {
+
+        String query = "CREATE (b: Book)" +
+                "SET b.title = " + this.title +
+                "SET b.price =" + this.price +
+                "SET b.bookID = " + this.bookID;
+
+        if(this.type != null){
+            query = query + "SET b.type = " + this.type;
+        }
+        if(this.publisher != null){
+            query = query + "SET b.publisher = " + this.publisher;
+        }
+        if(this.semester != null){
+            query = query + "SET b.semester = " + this.semester;
+        }
+        if(this.author != null){
+            query = query + "SET b.author = " + this.author;
+        }
+        if(this.isbn != null){
+            query = query + "SET b.isbn = " + this.isbn;
+        }
+
+        tx.run(query);
 
     }
 
     @Override
     public void removeFromDB(Transaction tx) {
 
+
+
     }
 
     @Override
     public void getFromDB(Transaction tx) {
+
+    }
+
+    @Override
+    public void update(Transaction tx) {
 
     }
 

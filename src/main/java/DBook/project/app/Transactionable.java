@@ -10,4 +10,6 @@ public interface Transactionable {
 
     void getFromDB(Transaction tx);
 
+    void update(Transaction tx);
+
 }

@@ -54,21 +54,7 @@ public class Book implements Transactionable {
                 " SET b.price =" + this.price.toString() +
                 " SET b.bookID = " + this.bookID.toString();
 
-        if(this.type != null){
-            query = query + " SET b.type = " + this.type.toString();
-        }
-        if(this.publisher != null){
-            query = query + " SET b.publisher = " + this.publisher;
-        }
-        if(this.semester != null){
-            query = query + " SET b.semester = " + this.semester.toString();
-        }
-        if(this.author != null){
-            query = query + " SET b.author = " + this.author;
-        }
-        if(this.isbn != null){
-            query = query + " SET b.isbn = " + this.isbn;
-        }
+        query = this.addOptionalAttributes(query);
 
         tx.run(query);
 
@@ -86,11 +72,20 @@ public class Book implements Transactionable {
 
     @Override
     public void getFromDB(Transaction tx) {
-
+        //potrzebne?
     }
 
     @Override
     public void update(Transaction tx) {
+
+        String query = "MATCH (b: Book {bookID: " + this.bookID + "})" +
+                " SET b.title = " + this.title +
+                " SET b.price =" + this.price.toString() +
+                " SET b.bookID = " + this.bookID.toString();
+
+        query = this.addOptionalAttributes(query);
+
+        tx.run(query);
 
     }
 
@@ -113,4 +108,27 @@ public class Book implements Transactionable {
     public void setIsbn(String isbn) {
         this.isbn = isbn;
     }
+
+    private String addOptionalAttributes(String query){
+
+        if(this.type != null){
+            query = query + " SET b.type = " + this.type.toString();
+        }
+        if(this.publisher != null){
+            query = query + " SET b.publisher = " + this.publisher;
+        }
+        if(this.semester != null){
+            query = query + " SET b.semester = " + this.semester.toString();
+        }
+        if(this.author != null){
+            query = query + " SET b.author = " + this.author;
+        }
+        if(this.isbn != null){
+            query = query + " SET b.isbn = " + this.isbn;
+        }
+
+        return query;
+
+    }
+
 }

@@ -131,4 +131,7 @@ public class Book implements Transactionable {
 
     }
 
+    public Integer getBookID() {
+        return bookID;
+    }
 }

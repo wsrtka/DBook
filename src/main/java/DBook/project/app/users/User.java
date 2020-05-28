@@ -1,16 +1,17 @@
 package DBook.project.app.users;
 
+import DBook.project.app.Transactionable;
 import DBook.project.app.book.Book;
-import DBook.project.app.book.BookInfo;
 import DBook.project.app.book.BookType;
 import DBook.project.app.IdGenerator;
 import DBook.project.app.offers.Invoice;
 import DBook.project.app.offers.Offer;
+import org.neo4j.driver.Transaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class User {
+public class User implements Transactionable {
     private Integer userID;
     private IdGenerator idGenerator;
     private HashMap<Integer, Offer> usersOffers;
@@ -72,6 +73,26 @@ public class User {
     }
 
     public void listAllBookInfos(){ // ma wyswietlic wszyskie book info (moze by jakos z baza to polaczyc?)
+
+    }
+
+    @Override
+    public void addToDB(Transaction tx) {
+
+    }
+
+    @Override
+    public void removeFromDB(Transaction tx) {
+
+    }
+
+    @Override
+    public void getFromDB(Transaction tx) {
+
+    }
+
+    @Override
+    public void update(Transaction tx) {
 
     }
 }

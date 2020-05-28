@@ -4,6 +4,9 @@ target/
 !**/src/main/**
 !**/src/test/**
 
+### Authentication ###
+auth.json
+
 ### STS ###
 .apt_generated
 .classpath

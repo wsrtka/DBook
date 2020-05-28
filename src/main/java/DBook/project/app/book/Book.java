@@ -2,6 +2,7 @@ package DBook.project.app.book;
 
 import DBook.project.app.IdGenerator;
 import DBook.project.app.Transactionable;
+import org.neo4j.driver.Result;
 import org.neo4j.driver.Transaction;
 
 public class Book implements Transactionable {
@@ -47,7 +48,7 @@ public class Book implements Transactionable {
     }
 
     @Override
-    public void addToDB(Transaction tx) {
+    public Result addToDB(Transaction tx) {
 
         String query = "CREATE (b: Book)" +
                 " SET b.title = " + this.title +
@@ -56,27 +57,28 @@ public class Book implements Transactionable {
 
         query = this.addOptionalAttributes(query);
 
-        tx.run(query);
+        return tx.run(query);
 
     }
 
     @Override
-    public void removeFromDB(Transaction tx) {
+    public Result removeFromDB(Transaction tx) {
 
         String query = "MATCH (b: Book {bookID: " + this.bookID + "})" +
                 " DELETE b";
 
-        tx.run(query);
+        return tx.run(query);
 
     }
 
     @Override
-    public void getFromDB(Transaction tx) {
+    public Result getFromDB(Transaction tx) {
         //potrzebne?
+        return null;
     }
 
     @Override
-    public void update(Transaction tx) {
+    public Result update(Transaction tx) {
 
         String query = "MATCH (b: Book {bookID: " + this.bookID + "})" +
                 " SET b.title = " + this.title +
@@ -85,7 +87,7 @@ public class Book implements Transactionable {
 
         query = this.addOptionalAttributes(query);
 
-        tx.run(query);
+        return tx.run(query);
 
     }
 

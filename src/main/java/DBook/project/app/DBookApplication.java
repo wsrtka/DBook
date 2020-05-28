@@ -1,10 +1,14 @@
 package DBook.project.app;
 
+import DBook.project.app.book.Book;
 import DBook.project.app.users.User;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.neo4j.driver.AccessMode;
 import org.neo4j.driver.Driver;
+import org.neo4j.driver.Session;
+import org.neo4j.driver.SessionConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -18,11 +22,11 @@ import java.util.ArrayList;
 public class DBookApplication {
 
 	private ArrayList<User> userArrayList;
-	private Driver driver;
+	private static Driver driver;
 
 	public DBookApplication(){
 		this.userArrayList = new ArrayList<>();
-		this.driver = this.initializeDriver();
+		driver = this.initializeDriver();
 	}
 
 	private Driver initializeDriver(){
@@ -62,6 +66,11 @@ public class DBookApplication {
 
 		SpringApplication.run(DBookApplication.class, args);
 
+		//testowanie Book
+		try(Session s = driver.session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
+			Book b = new Book("Tytus, Romek i Atomek", new Float("29,99"));
+			s.writeTransaction(b::addToDB);
+		}
 
 	}
 

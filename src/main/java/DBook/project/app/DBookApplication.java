@@ -7,9 +7,10 @@ import org.json.simple.parser.ParseException;
 import org.neo4j.driver.Driver;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.json.*;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -28,10 +29,16 @@ public class DBookApplication {
 		JSONParser parser = new JSONParser();
 		JSONObject auth = new JSONObject();
 
-		try{
-			auth = (JSONObject) parser.parse("../../../../../../auth.json");
+		try(FileReader reader = new FileReader("auth.json")){
+			auth = (JSONObject) parser.parse(reader);
 		}
 		catch (ParseException e){
+			e.printStackTrace();
+		}
+		catch (FileNotFoundException e){
+			e.printStackTrace();
+		}
+		catch (IOException e){
 			e.printStackTrace();
 		}
 
@@ -54,8 +61,6 @@ public class DBookApplication {
 		DBookApplication dBookApplication = new DBookApplication();
 
 		SpringApplication.run(DBookApplication.class, args);
-
-
 	}
 
 }

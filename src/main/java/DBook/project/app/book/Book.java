@@ -64,4 +64,24 @@ public class Book implements Transactionable {
     public void getFromDB(Transaction tx) {
 
     }
+
+    public void setType(BookType type) {
+        this.type = type;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public void setSemester(int semester) {
+        this.semester = semester;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
 }

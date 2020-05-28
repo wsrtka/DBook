@@ -11,7 +11,7 @@ public class Book implements Transactionable {
     private Integer bookID;
 
     private String title;
-    private float price;
+    private Float price;
     private BookType type;
     private String publisher;
     private Integer semester;
@@ -20,7 +20,7 @@ public class Book implements Transactionable {
 
     public Book(
             String title,
-            float price,
+            Float price,
             BookType type,
             String publisher,
             Integer semester,
@@ -50,24 +50,24 @@ public class Book implements Transactionable {
     public void addToDB(Transaction tx) {
 
         String query = "CREATE (b: Book)" +
-                "SET b.title = " + this.title +
-                "SET b.price =" + this.price +
-                "SET b.bookID = " + this.bookID;
+                " SET b.title = " + this.title +
+                " SET b.price =" + this.price.toString() +
+                " SET b.bookID = " + this.bookID.toString();
 
         if(this.type != null){
-            query = query + "SET b.type = " + this.type;
+            query = query + " SET b.type = " + this.type.toString();
         }
         if(this.publisher != null){
-            query = query + "SET b.publisher = " + this.publisher;
+            query = query + " SET b.publisher = " + this.publisher;
         }
         if(this.semester != null){
-            query = query + "SET b.semester = " + this.semester;
+            query = query + " SET b.semester = " + this.semester.toString();
         }
         if(this.author != null){
-            query = query + "SET b.author = " + this.author;
+            query = query + " SET b.author = " + this.author;
         }
         if(this.isbn != null){
-            query = query + "SET b.isbn = " + this.isbn;
+            query = query + " SET b.isbn = " + this.isbn;
         }
 
         tx.run(query);
@@ -77,7 +77,10 @@ public class Book implements Transactionable {
     @Override
     public void removeFromDB(Transaction tx) {
 
+        String query = "MATCH (b: Book {bookID: " + this.bookID + "})" +
+                " DELETE b";
 
+        tx.run(query);
 
     }
 

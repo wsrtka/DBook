@@ -2,6 +2,7 @@ package DBook.project.app.offers;
 
 import DBook.project.app.Transactionable;
 import DBook.project.app.book.Book;
+import org.neo4j.driver.Result;
 import org.neo4j.driver.Transaction;
 
 import java.util.ArrayList;
@@ -29,22 +30,22 @@ public class Offer implements Transactionable {
     }
 
     @Override
-    public void addToDB(Transaction tx) {
-
+    public Result addToDB(Transaction tx) {
+        return null;
     }
 
     @Override
-    public void removeFromDB(Transaction tx) {
-
+    public Result removeFromDB(Transaction tx) {
+        return null;
     }
 
     @Override
-    public void getFromDB(Transaction tx) {
-
+    public Result getFromDB(Transaction tx) {
+        return null;
     }
 
     @Override
-    public void update(Transaction tx) {
-
+    public Result update(Transaction tx) {
+        return null;
     }
 }

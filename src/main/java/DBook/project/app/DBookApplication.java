@@ -48,7 +48,7 @@ public class DBookApplication {
 
 		String username = (String) auth.get("username");
 		String password = (String) auth.get("password");
-		String uri = ((String) auth.get("host")) + ((String) auth.get("port"));
+		String uri = "bolt://" + ((String) auth.get("host")) + ":" + ((String) auth.get("port"));
 
 		DBDriver dbd = new DBDriver(uri, username, password);
 
@@ -68,7 +68,7 @@ public class DBookApplication {
 
 		//testowanie Book
 		try(Session s = driver.session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
-			Book b = new Book("Tytus, Romek i Atomek", new Float("29,99"));
+			Book b = new Book("Tytus, Romek i Atomek", new Float("29.99"));
 			s.writeTransaction(b::addToDB);
 		}
 

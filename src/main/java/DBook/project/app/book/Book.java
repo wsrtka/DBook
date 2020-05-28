@@ -52,8 +52,8 @@ public class Book implements Transactionable {
 
         String query = "CREATE (b: Book)" +
                 " SET b.title = " + this.title +
-                " SET b.price =" + this.price.toString() +
-                " SET b.bookID = " + this.bookID.toString();
+                ",  b.price =" + this.price.toString() +
+                ",  b.bookID = " + this.bookID.toString();
 
         query = this.addOptionalAttributes(query);
 
@@ -82,8 +82,8 @@ public class Book implements Transactionable {
 
         String query = "MATCH (b: Book {bookID: " + this.bookID + "})" +
                 " SET b.title = " + this.title +
-                " SET b.price =" + this.price.toString() +
-                " SET b.bookID = " + this.bookID.toString();
+                ", b.price =" + this.price.toString() +
+                ", b.bookID = " + this.bookID.toString();
 
         query = this.addOptionalAttributes(query);
 
@@ -114,19 +114,19 @@ public class Book implements Transactionable {
     private String addOptionalAttributes(String query){
 
         if(this.type != null){
-            query = query + " SET b.type = " + this.type.toString();
+            query = query + ", b.type = " + this.type.toString();
         }
         if(this.publisher != null){
-            query = query + " SET b.publisher = " + this.publisher;
+            query = query + ", b.publisher = " + this.publisher;
         }
         if(this.semester != null){
-            query = query + " SET b.semester = " + this.semester.toString();
+            query = query + ", b.semester = " + this.semester.toString();
         }
         if(this.author != null){
-            query = query + " SET b.author = " + this.author;
+            query = query + ", b.author = " + this.author;
         }
         if(this.isbn != null){
-            query = query + " SET b.isbn = " + this.isbn;
+            query = query + ", b.isbn = " + this.isbn;
         }
 
         return query;

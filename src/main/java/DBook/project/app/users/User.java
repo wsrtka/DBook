@@ -6,6 +6,7 @@ import DBook.project.app.book.BookType;
 import DBook.project.app.IdGenerator;
 import DBook.project.app.offers.Invoice;
 import DBook.project.app.offers.Offer;
+import org.neo4j.driver.Result;
 import org.neo4j.driver.Transaction;
 
 import java.util.ArrayList;
@@ -13,12 +14,11 @@ import java.util.HashMap;
 
 public class User implements Transactionable {
     private Integer userID;
-    private IdGenerator idGenerator;
+    private static IdGenerator idGenerator = new IdGenerator();
     private HashMap<Integer, Offer> usersOffers;
     private HashMap<Integer, Invoice> usersInvoices;
 
     public User(){
-        this.idGenerator = IdGenerator.getInstance();
         this.userID = this.idGenerator.getNextID();
         this.usersOffers = new HashMap<>();
         this.usersInvoices = new HashMap<>();
@@ -46,7 +46,6 @@ public class User implements Transactionable {
 
     public void createBookInfo(String title, Float price, BookType type, String publisher, String subject, Integer semester, String author, String isbn){
         Integer bookInfoID = this.idGenerator.getNextID();
-        new BookInfo(bookInfoID,title, price, type, publisher, subject, semester, author, isbn);
     }
 
     public void listMyInvoices(){
@@ -77,22 +76,22 @@ public class User implements Transactionable {
     }
 
     @Override
-    public void addToDB(Transaction tx) {
-
+    public Result addToDB(Transaction tx) {
+        return null;
     }
 
     @Override
-    public void removeFromDB(Transaction tx) {
-
+    public Result removeFromDB(Transaction tx) {
+        return null;
     }
 
     @Override
-    public void getFromDB(Transaction tx) {
-
+    public Result getFromDB(Transaction tx) {
+        return null;
     }
 
     @Override
-    public void update(Transaction tx) {
-
+    public Result update(Transaction tx) {
+        return null;
     }
 }

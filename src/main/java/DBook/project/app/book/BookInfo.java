@@ -2,7 +2,7 @@ package DBook.project.app.book;
 
 import java.util.ArrayList;
 
-public class BookInfo {
+public class  BookInfo {
     private Integer bookInfoID;
 
     private ArrayList<Book> books;

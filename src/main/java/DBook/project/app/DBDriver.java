@@ -6,17 +6,15 @@ import org.neo4j.driver.GraphDatabase;
 
 public class DBDriver implements AutoCloseable{
 
-    private static DBDriver dbdriver;
     private static Driver driver;
 
-    private DBDriver(String uri, String user, String password){
-        driver = GraphDatabase.driver(uri, AuthTokens.basic(user, password));
+    public DBDriver(String uri, String user, String password){
+        if(driver == null) {
+            driver = GraphDatabase.driver(uri, AuthTokens.basic(user, password));
+        }
     }
 
-    public Driver getDriver(String uri, String user, String password){
-        if(driver == null){
-            dbdriver = new DBDriver(uri, user, password);
-        }
+    public Driver getDriver(){
         return driver;
     }
 

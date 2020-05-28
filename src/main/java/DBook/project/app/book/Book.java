@@ -5,6 +5,8 @@ import DBook.project.app.Transactionable;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Transaction;
 
+import static org.neo4j.driver.Values.parameters;
+
 public class Book implements Transactionable {
 
     private static final IdGenerator idGen = new IdGenerator();
@@ -51,20 +53,25 @@ public class Book implements Transactionable {
     public Result addToDB(Transaction tx) {
 
         String query = "CREATE (b: Book)" +
-                " SET b.title = " + this.title +
-                ",  b.price =" + this.price.toString() +
-                ",  b.bookID = " + this.bookID.toString();
+                " SET b.title = $title" +
+                ",  b.price = $price" +
+                ",  b.bookID = $bookID";
 
         query = this.addOptionalAttributes(query);
 
-        return tx.run(query);
+        return tx.run(query, parameters(
+                "title", this.title,
+                "price", this.price,
+                "bookID", this.bookID
+            )
+        );
 
     }
 
     @Override
     public Result removeFromDB(Transaction tx) {
 
-        String query = "MATCH (b: Book {bookID: " + this.bookID + "})" +
+        String query = "MATCH (b: Book {bookID: $bookID})" +
                 " DELETE b";
 
         return tx.run(query);
@@ -80,14 +87,18 @@ public class Book implements Transactionable {
     @Override
     public Result update(Transaction tx) {
 
-        String query = "MATCH (b: Book {bookID: " + this.bookID + "})" +
-                " SET b.title = " + this.title +
-                ", b.price =" + this.price.toString() +
-                ", b.bookID = " + this.bookID.toString();
+        String query = "MATCH (b: Book {bookID: $bookID})" +
+                " SET b.title = $title" +
+                ", b.price = $price" +
+                ", b.bookID = $bookID";
 
         query = this.addOptionalAttributes(query);
 
-        return tx.run(query);
+        return tx.run(query, parameters(
+                "title", this.title,
+                "price", this.price,
+                "bookID", this.bookID)
+        );
 
     }
 
@@ -114,19 +125,19 @@ public class Book implements Transactionable {
     private String addOptionalAttributes(String query){
 
         if(this.type != null){
-            query = query + ", b.type = " + this.type.toString();
+            query = query + ", b.type = $type";
         }
         if(this.publisher != null){
-            query = query + ", b.publisher = " + this.publisher;
+            query = query + ", b.publisher = $publisher";
         }
         if(this.semester != null){
-            query = query + ", b.semester = " + this.semester.toString();
+            query = query + ", b.semester = $semester";
         }
         if(this.author != null){
-            query = query + ", b.author = " + this.author;
+            query = query + ", b.author = $author";
         }
         if(this.isbn != null){
-            query = query + ", b.isbn = " + this.isbn;
+            query = query + ", b.isbn = $isbn";
         }
 
         return query;

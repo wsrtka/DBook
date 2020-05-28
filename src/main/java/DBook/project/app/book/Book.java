@@ -5,6 +5,9 @@ import DBook.project.app.Transactionable;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Transaction;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.neo4j.driver.Values.parameters;
 
 public class Book implements Transactionable {
@@ -20,6 +23,8 @@ public class Book implements Transactionable {
     private Integer semester;
     private String author;
     private String isbn;
+
+    private Map<String, Object> params;
 
     public Book(
             String title,
@@ -39,6 +44,12 @@ public class Book implements Transactionable {
         this.isbn = isbn;
 
         this.bookID = idGen.getNextID();
+
+        this.params = new HashMap<>();
+        this.updateParams();
+        this.params.put("title", this.title);
+        this.params.put("price", this.price);
+        this.params.put("bookID", this.bookID);
     }
 
     // minimal required book info
@@ -47,6 +58,11 @@ public class Book implements Transactionable {
         this.price = price;
 
         this.bookID = idGen.getNextID();
+
+        this.params = new HashMap<>();
+        this.params.put("title", this.title);
+        this.params.put("price", this.price);
+        this.params.put("bookID", this.bookID);
     }
 
     @Override
@@ -58,13 +74,9 @@ public class Book implements Transactionable {
                 ",  b.bookID = $bookID";
 
         query = this.addOptionalAttributes(query);
+        this.updateParams();
 
-        return tx.run(query, parameters(
-                "title", this.title,
-                "price", this.price,
-                "bookID", this.bookID
-            )
-        );
+        return tx.run(query, this.params);
 
     }
 
@@ -74,7 +86,7 @@ public class Book implements Transactionable {
         String query = "MATCH (b: Book {bookID: $bookID})" +
                 " DELETE b";
 
-        return tx.run(query);
+        return tx.run(query, parameters("bookID", this.bookID));
 
     }
 
@@ -94,11 +106,9 @@ public class Book implements Transactionable {
 
         query = this.addOptionalAttributes(query);
 
-        return tx.run(query, parameters(
-                "title", this.title,
-                "price", this.price,
-                "bookID", this.bookID)
-        );
+        this.updateParams();
+
+        return tx.run(query, this.params);
 
     }
 
@@ -147,4 +157,51 @@ public class Book implements Transactionable {
     public Integer getBookID() {
         return bookID;
     }
+
+    private void updateParams(){
+
+        if(this.isbn != null){
+            if(this.params.containsKey("isbn")){
+                this.params.replace("isbn", this.isbn);
+            }
+            else{
+                this.params.put("isbn", this.isbn);
+            }
+        }
+        if(this.type != null){
+            if(this.params.containsKey("type")){
+                this.params.replace("type", this.type);
+            }
+            else{
+                this.params.put("type", this.type);
+            }
+        }
+        if(this.author != null){
+            if(this.params.containsKey("author")){
+                this.params.replace("author", this.author);
+            }
+            else{
+                this.params.put("author", this.author);
+            }
+        }
+        if(this.publisher != null){
+            if(this.params.containsKey("publisher")){
+                this.params.replace("publisher", this.publisher);
+            }
+            else{
+                this.params.put("publisher", this.publisher);
+            }
+        }
+        if(this.semester != null){
+            if(this.params.containsKey("semester")){
+                this.params.replace("semester", this.semester);
+            }
+            else{
+                this.params.put("semester", this.semester);
+            }
+        }
+
+
+    }
+
 }

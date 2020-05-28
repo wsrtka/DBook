@@ -72,6 +72,8 @@ public class DBookApplication {
 			s.writeTransaction(b::addToDB);
 		}
 
+		System.out.println("Added book.");
+
 	}
 
 }

@@ -2,15 +2,10 @@ package DBook.project.app;
 
 public class IdGenerator {
 
-    private static final IdGenerator instance = new IdGenerator();
     private Integer nextID;
 
-    private IdGenerator(){
+    public IdGenerator(){
         this.nextID = 0;
-    }
-
-    public static IdGenerator getInstance(){
-        return instance;
     }
 
     public int getNextID() {

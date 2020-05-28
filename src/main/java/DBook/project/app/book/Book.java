@@ -1,4 +1,4 @@
-package DBook.project.app;
+package DBook.project.app.book;
 
 public class Book {
     private Integer bookID;

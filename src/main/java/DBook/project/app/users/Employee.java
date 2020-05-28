@@ -1,4 +1,7 @@
-package DBook.project.app;
+package DBook.project.app.users;
+
+import DBook.project.app.book.Book;
+import DBook.project.app.DBookApplication;
 
 import java.util.ArrayList;
 

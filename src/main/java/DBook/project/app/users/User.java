@@ -1,4 +1,11 @@
-package DBook.project.app;
+package DBook.project.app.users;
+
+import DBook.project.app.book.Book;
+import DBook.project.app.book.BookInfo;
+import DBook.project.app.book.BookType;
+import DBook.project.app.IdGenerator;
+import DBook.project.app.offers.Invoice;
+import DBook.project.app.offers.Offer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -14,7 +14,6 @@ public class IdGenerator {
     }
 
     public int getNextID() {
-        this.nextID++;
-        return this.nextID-1;
+        return this.nextID++;
     }
 }

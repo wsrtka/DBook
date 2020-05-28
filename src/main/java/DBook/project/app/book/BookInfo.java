@@ -1,7 +1,6 @@
-package DBook.project.app;
+package DBook.project.app.book;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class BookInfo {
     private Integer bookInfoID;

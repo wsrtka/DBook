@@ -1,4 +1,6 @@
-package DBook.project.app;
+package DBook.project.app.offers;
+
+import DBook.project.app.book.Book;
 
 import java.util.HashMap;
 

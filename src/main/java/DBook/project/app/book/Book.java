@@ -26,6 +26,14 @@ public class Book implements Transactionable {
 
     private Map<String, Object> params;
 
+    public Book(){
+        this.params = new HashMap<>();
+        this.updateParams();
+        this.params.put("title", this.title);
+        this.params.put("price", this.price);
+        this.params.put("bookID", this.bookID);
+    }
+
     public Book(
             String title,
             Float price,
@@ -35,6 +43,8 @@ public class Book implements Transactionable {
             String author,
             String isbn
             ){
+        this();
+
         this.title = title;
         this.price = price;
         this.type = type;
@@ -44,25 +54,16 @@ public class Book implements Transactionable {
         this.isbn = isbn;
 
         this.bookID = idGen.getNextID();
-
-        this.params = new HashMap<>();
-        this.updateParams();
-        this.params.put("title", this.title);
-        this.params.put("price", this.price);
-        this.params.put("bookID", this.bookID);
     }
 
     // minimal required book info
     public Book(String title, float price){
+        this();
+
         this.title = title;
         this.price = price;
 
         this.bookID = idGen.getNextID();
-
-        this.params = new HashMap<>();
-        this.params.put("title", this.title);
-        this.params.put("price", this.price);
-        this.params.put("bookID", this.bookID);
     }
 
     @Override

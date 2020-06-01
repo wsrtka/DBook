@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.neo4j.driver.Values.parameters;
+
 public class User implements Transactionable {
 
     private Integer userID;
@@ -90,11 +92,11 @@ public class User implements Transactionable {
     @Override
     public Result addToDB(Transaction tx) {
 
-        String query = "CREATE (p: Person) " +
-                "SET p.userID = $userID, " +
-                "p.name = $name, " +
-                "p.surname = $surname, " +
-                "p.email = $email";
+        String query = "CREATE (u: User) " +
+                "SET u.userID = $userID, " +
+                "u.name = $name, " +
+                "u.surname = $surname, " +
+                "u.email = $email";
 
         this.updateParams();
 
@@ -104,7 +106,12 @@ public class User implements Transactionable {
 
     @Override
     public Result removeFromDB(Transaction tx) {
-        return null;
+
+        String query = "MATCH (u: User {$userID: $userID{)" +
+                "DELETE u";
+
+        return tx.run(query, parameters("userID", this.userID));
+
     }
 
     @Override

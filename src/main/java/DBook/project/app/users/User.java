@@ -170,11 +170,27 @@ public class User implements Transactionable {
 
     @Override
     public Result getFromDB(Transaction tx) {
-        return null;
+        String query = "MATCH (u: User {name: $name, surname: $surname, email: $email";
+        query = addOptionalAttributes(query);
+        query = query + "}) RETURN u";
+
+        updateParams();
+
+        return tx.run(query, this.params);
     }
 
     @Override
     public Result update(Transaction tx) {
-        return null;
+        String query = "MATCH (u: User {userID: $userID})" +
+                " SET u.name = $name" +
+                ", u.surname = $surname" +
+                ", u.email = $email" +
+                ", u.userID = $userID";
+
+        query = this.addOptionalAttributes(query);
+
+        this.updateParams();
+
+        return tx.run(query, this.params);
     }
 }

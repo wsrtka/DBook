@@ -59,7 +59,10 @@ public class Invoice implements Transactionable {
     @Override
     public Result getFromDB(Transaction tx) {
 
-        return null;
+        String query = "MATCH (i: Invoice {i.invoiceID: $invoiceID}) " +
+                "RETURN i";
+
+        return tx.run(query, this.params);
 
     }
 

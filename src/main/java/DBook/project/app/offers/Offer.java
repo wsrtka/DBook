@@ -1,5 +1,6 @@
 package DBook.project.app.offers;
 
+import DBook.project.app.IdGenerator;
 import DBook.project.app.Transactionable;
 import DBook.project.app.book.Book;
 import org.neo4j.driver.Result;
@@ -7,16 +8,31 @@ import org.neo4j.driver.Transaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Offer implements Transactionable {
+
     private Integer offerID;
+
+    private static IdGenerator idGen = new IdGenerator();
+
     private HashMap<Integer, Book> books;
 
+    private Map<String, Object> params;
+
     public Offer(ArrayList<Book> books){
-        this.offerID = 0;
-        for(Book book : books){ // dodajemy do listy każdą książkę
+
+        this.offerID = idGen.getNextID();
+
+        this.books = new HashMap<>();
+
+        for(Book book : books){
             this.books.put(book.getBookID(), book);
         }
+
+        this.params = new HashMap<>();
+        this.params.put("offerID", this.offerID);
+
     }
 
     public ArrayList<Book> getUnsoldBooks(){
@@ -31,17 +47,31 @@ public class Offer implements Transactionable {
 
     @Override
     public Result addToDB(Transaction tx) {
-        return null;
+
+        String query = "CREATE (o: Offer {offerID: $offerID})";
+
+        return tx.run(query, this.params);
+
     }
 
     @Override
     public Result removeFromDB(Transaction tx) {
-        return null;
+
+        String query = "MATCH (o: Offer {offerID: $offerID}) " +
+                "DELETE o";
+
+        return tx.run(query, this.params);
+
     }
 
     @Override
     public Result getFromDB(Transaction tx) {
-        return null;
+
+        String query = "MATCH (o: Offer {offerID: $offerID}) " +
+                "RETURN o";
+
+        return tx.run(query, this.params);
+
     }
 
     @Override
@@ -52,9 +82,5 @@ public class Offer implements Transactionable {
     @Override
     public void updateParams() {
 
-    }
-
-    public Integer getOfferID() {
-        return offerID;
     }
 }

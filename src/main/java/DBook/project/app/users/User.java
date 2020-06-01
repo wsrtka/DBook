@@ -130,7 +130,7 @@ public class User implements Transactionable {
 
     @Override
     public Result update(Transaction tx) {
-
+//      TODO: ustalić czy konieczne, możemy zrobić User final
         String query = "MATCH (u: User {u.userID: $userID}) " +
                 "SET u.name = $name " +
                 "u.surname = $surname " +

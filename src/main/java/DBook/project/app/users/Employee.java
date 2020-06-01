@@ -6,9 +6,10 @@ import DBook.project.app.DBookApplication;
 import java.util.ArrayList;
 
 public class Employee extends User{
+
     private DBookApplication dBookApplication;
-    public Employee(DBookApplication dBookApplication){
-        super();
+    public Employee(DBookApplication dBookApplication, String name, String surname, String email){
+        super(name, surname, email);
         this.dBookApplication = dBookApplication;
     }
 

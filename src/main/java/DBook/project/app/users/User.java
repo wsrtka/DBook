@@ -39,6 +39,10 @@ public class User implements Transactionable {
         this.usersOffers = new HashMap<>();
         this.usersInvoices = new HashMap<>();
 
+        this.params = new HashMap<>();
+        this.params.put("userID", this.userID);
+        this.updateParams();
+
     }
 
     public HashMap<Integer, Invoice> getUsersInvoices() {
@@ -64,6 +68,7 @@ public class User implements Transactionable {
     }
 
     public void listUserInvoices(){
+//        TODO: wyciągać Invoice'y użytkownika z bazy
         ArrayList<Integer> invoicesIDList = new ArrayList(usersInvoices.entrySet());
         for (Integer invoiceID: invoicesIDList) {
             System.out.println(invoiceID+";");
@@ -71,6 +76,7 @@ public class User implements Transactionable {
     }
 
     public void listUserOffers(){
+//        TODO: wyciągać Offer'y użytkownika z bazy
         ArrayList<Offer> offersIDList = new ArrayList(usersOffers.entrySet());
         for(Offer offerID : offersIDList){
             System.out.println(offerID + ";");
@@ -83,7 +89,17 @@ public class User implements Transactionable {
 
     @Override
     public Result addToDB(Transaction tx) {
-        return null;
+
+        String query = "CREATE (p: Person) " +
+                "SET p.userID = $userID, " +
+                "p.name = $name, " +
+                "p.surname = $surname, " +
+                "p.email = $email";
+
+        this.updateParams();
+
+        return tx.run(query, this.params);
+
     }
 
     @Override

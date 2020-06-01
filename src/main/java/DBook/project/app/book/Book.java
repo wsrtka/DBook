@@ -219,4 +219,7 @@ public class Book implements Transactionable {
 
     }
 
+    public Float getPrice() {
+        return price;
+    }
 }

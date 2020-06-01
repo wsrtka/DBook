@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.neo4j.driver.Values.parameters;
+
 public class Invoice implements Transactionable {
 
     private Integer invoiceID;
@@ -20,12 +22,12 @@ public class Invoice implements Transactionable {
 
     private Map<String, Object> params;
 
-    public Invoice(ArrayList<Book> books){
+    public Invoice(ArrayList<Book> books, Transaction tx){
 
         this.invoiceID = idGen.getNextID();
 
         for(Book book : books){
-            this.books.put(book.getBookID(), book);
+            this.addBook(book, tx);
         }
 
         this.params = new HashMap<>();
@@ -33,8 +35,32 @@ public class Invoice implements Transactionable {
 
     }
 
-    public Integer calculateInvoice(){
-        return null;
+    public Float calculateInvoice(){
+        Float sum = new Float(0);
+
+        for(Book book : this.books.values()){
+            sum = sum + book.getPrice();
+        }
+
+        return sum;
+    }
+
+    private Result addBook(Book b, Transaction tx){
+
+        this.books.put(b.getBookID(), b);
+
+        Result res = b.getFromDB(tx);
+
+        if(!res.hasNext()){
+            b.addToDB(tx);
+        }
+
+        String query = "MATCH (i: Invoice {invoiceID: $invoiceID}), " +
+                "(b: Book {bookID: $bookID}) " +
+                "CREATE (i)-[:HAS_A]->(b)";
+
+        return tx.run(query, parameters("invoiceID", this.invoiceID, "bookID", b.getBookID()));
+
     }
 
     @Override

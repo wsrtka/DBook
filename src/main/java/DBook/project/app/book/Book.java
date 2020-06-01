@@ -182,7 +182,7 @@ public class Book implements Transactionable {
     public void updateParams(){
 
         if(this.isbn != null){
-            if(this.params.containsKey("isbn")){
+            if(this.params.containsKey("isbn") && !this.params.get("isbn").equals(this.isbn)){
                 this.params.replace("isbn", this.isbn);
             }
             else{
@@ -190,7 +190,7 @@ public class Book implements Transactionable {
             }
         }
         if(this.type != null){
-            if(this.params.containsKey("type")){
+            if(this.params.containsKey("type") && !this.params.get("type").equals(this.type)){
                 this.params.replace("type", this.type);
             }
             else{
@@ -198,7 +198,7 @@ public class Book implements Transactionable {
             }
         }
         if(this.author != null){
-            if(this.params.containsKey("author")){
+            if(this.params.containsKey("author") && !this.params.get("author").equals(this.author)){
                 this.params.replace("author", this.author);
             }
             else{
@@ -206,7 +206,7 @@ public class Book implements Transactionable {
             }
         }
         if(this.publisher != null){
-            if(this.params.containsKey("publisher")){
+            if(this.params.containsKey("publisher") && !this.params.get("publisher").equals(this.publisher)){
                 this.params.replace("publisher", this.publisher);
             }
             else{
@@ -214,7 +214,7 @@ public class Book implements Transactionable {
             }
         }
         if(this.semester != null){
-            if(this.params.containsKey("semester")){
+            if(this.params.containsKey("semester") && !this.params.get("semester").equals(this.semester)){
                 this.params.replace("semester", this.semester);
             }
             else{

@@ -11,6 +11,7 @@ import org.neo4j.driver.Transaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class User implements Transactionable {
 
@@ -18,12 +19,22 @@ public class User implements Transactionable {
 
     private static IdGenerator idGenerator = new IdGenerator();
 
+    private String name;
+    private String surname;
+    private String email;
+
     private HashMap<Integer, Offer> usersOffers;
     private HashMap<Integer, Invoice> usersInvoices;
 
-    public User(){
+    private Map<String, Object> params;
 
-        this.userID = this.idGenerator.getNextID();
+    public User(String name, String surname, String email){
+
+        this.userID = idGenerator.getNextID();
+
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
 
         this.usersOffers = new HashMap<>();
         this.usersInvoices = new HashMap<>();
@@ -93,7 +104,14 @@ public class User implements Transactionable {
     @Override
     public void updateParams() {
 
-
+        if(this.email != null){
+            if(this.params.containsKey("email")){
+                this.params.replace("email", this.email);
+            }
+            else{
+                this.params.put("email", this.email);
+            }
+        }
 
     }
 }

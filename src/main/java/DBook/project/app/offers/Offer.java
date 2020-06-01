@@ -12,8 +12,8 @@ public class Offer implements Transactionable {
     private Integer offerID;
     private HashMap<Integer, Book> books;
 
-    public Offer(Integer offerID, ArrayList<Book> books){
-        this.offerID = offerID;
+    public Offer(ArrayList<Book> books){
+        this.offerID = 0;
         for(Book book : books){ // dodajemy do listy każdą książkę
             this.books.put(book.getBookID(), book);
         }
@@ -47,5 +47,14 @@ public class Offer implements Transactionable {
     @Override
     public Result update(Transaction tx) {
         return null;
+    }
+
+    @Override
+    public void updateParams() {
+
+    }
+
+    public Integer getOfferID() {
+        return offerID;
     }
 }

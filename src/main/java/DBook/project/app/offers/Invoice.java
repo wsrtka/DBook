@@ -13,8 +13,8 @@ public class Invoice implements Transactionable {
     private HashMap<Integer, Book> books;
 
 
-    public Invoice(Integer invoiceID, ArrayList<Book> books){
-        this.invoiceID = invoiceID;
+    public Invoice(ArrayList<Book> books){
+        this.invoiceID = 0;
         for(Book book : books){ // dodajemy do listy każdą książkę
             this.books.put(book.getBookID(), book);
         }
@@ -42,5 +42,14 @@ public class Invoice implements Transactionable {
     @Override
     public Result update(Transaction tx) {
         return null;
+    }
+
+    @Override
+    public void updateParams() {
+
+    }
+
+    public Integer getInvoiceID() {
+        return invoiceID;
     }
 }

@@ -34,6 +34,7 @@ public class Book implements Transactionable {
         this.params.put("bookID", this.bookID);
     }
 
+    //cały konstruktor może nie być potrzebny
     public Book(
             String title,
             Float price,

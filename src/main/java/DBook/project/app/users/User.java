@@ -15,14 +15,19 @@ import java.util.HashMap;
 public class User implements Transactionable {
 
     private Integer userID;
+
     private static IdGenerator idGenerator = new IdGenerator();
+
     private HashMap<Integer, Offer> usersOffers;
     private HashMap<Integer, Invoice> usersInvoices;
 
     public User(){
+
         this.userID = this.idGenerator.getNextID();
+
         this.usersOffers = new HashMap<>();
         this.usersInvoices = new HashMap<>();
+
     }
 
     public HashMap<Integer, Invoice> getUsersInvoices() {
@@ -34,29 +39,27 @@ public class User implements Transactionable {
     }
 
     public void addOffer(ArrayList<Book> books){
-        Integer offerID = this.idGenerator.getNextID();
-        Offer offer = new Offer(offerID, books);
-        this.usersOffers.put(offerID, offer);
+
+        Offer offer = new Offer(books);
+        this.usersOffers.put(offer.getOfferID(), offer);
+
     }
 
-    public void addInvoice(ArrayList<Book> books){ // musimy ustalić jak mamy dodać książki (obiekty typu Book)
-        Integer invoiceID = this.idGenerator.getNextID();
-        Invoice invoice = new Invoice(invoiceID, books);
-        this.usersInvoices.put(invoiceID, invoice);
+    public void addInvoice(ArrayList<Book> books){
+        // TODO: musimy ustalić jak mamy dodać książki (obiekty typu Book)
+        Invoice invoice = new Invoice( books);
+        this.usersInvoices.put(invoice.getInvoiceID(), invoice);
+
     }
 
-    public void createBookInfo(String title, Float price, BookType type, String publisher, String subject, Integer semester, String author, String isbn){
-        Integer bookInfoID = this.idGenerator.getNextID();
-    }
-
-    public void listMyInvoices(){
+    public void listUserInvoices(){
         ArrayList<Integer> invoicesIDList = new ArrayList(usersInvoices.entrySet());
         for (Integer invoiceID: invoicesIDList) {
             System.out.println(invoiceID+";");
         }
     }
 
-    public void listMyOffers(){
+    public void listUserOffers(){
         ArrayList<Offer> offersIDList = new ArrayList(usersOffers.entrySet());
         for(Offer offerID : offersIDList){
             System.out.println(offerID + ";");
@@ -65,15 +68,6 @@ public class User implements Transactionable {
 
     public Integer calculateInvoice(Integer invoiceID){ // pytanie, czy tu nie robimy opcji tylko dla swoich zamowien/offert (bo pracownik potrzebuje miec dostep do wszystkich)
         return this.usersInvoices.get(invoiceID).calculateInvoice();
-    }
-
-
-    public void listBooksWithSpecifiedBookInfo(){ // ma zwrocicliste ksiazek z kategorii, ktora nas interesuje
-
-    }
-
-    public void listAllBookInfos(){ // ma wyswietlic wszyskie book info (moze by jakos z baza to polaczyc?)
-
     }
 
     @Override
@@ -98,6 +92,8 @@ public class User implements Transactionable {
 
     @Override
     public void updateParams() {
+
+
 
     }
 }

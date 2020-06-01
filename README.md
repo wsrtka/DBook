@@ -28,3 +28,8 @@ Klient:
 - może odebrać pieniądze ze sprzedanych książek/odebrać niesprzedane książki
 
 ![Untitled Diagram](https://user-images.githubusercontent.com/58508596/80869083-8f974b80-8c9e-11ea-8f2f-71b61556f968.png)
+
+## Typy relacji pomiędzy Node'ami
+User -[:IS_A]-> Client/Employee
+User -[:HAS_A]-> Invoice/Offer
+Invoice/Offer -[:CONTAINS]-> Book

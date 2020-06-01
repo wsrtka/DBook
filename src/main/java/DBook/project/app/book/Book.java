@@ -23,6 +23,7 @@ public class Book implements Transactionable {
     private Integer semester;
     private String author;
     private String isbn;
+    private BookState state;
 
     private Map<String, Object> params;
 
@@ -34,35 +35,13 @@ public class Book implements Transactionable {
         this.params.put("bookID", this.bookID);
     }
 
-    //cały konstruktor może nie być potrzebny
-    public Book(
-            String title,
-            Float price,
-            BookType type,
-            String publisher,
-            Integer semester,
-            String author,
-            String isbn
-            ){
-        this();
-
-        this.title = title;
-        this.price = price;
-        this.type = type;
-        this.publisher = publisher;
-        this.semester = semester;
-        this.author = author;
-        this.isbn = isbn;
-
-        this.bookID = idGen.getNextID();
-    }
-
     // minimal required book info
     public Book(String title, float price){
         this();
 
         this.title = title;
         this.price = price;
+        this.state = BookState.AVAILABLE;
 
         this.bookID = idGen.getNextID();
     }
@@ -73,9 +52,11 @@ public class Book implements Transactionable {
         String query = "CREATE (b: Book)" +
                 " SET b.title = $title" +
                 ",  b.price = $price" +
-                ",  b.bookID = $bookID";
+                ",  b.bookID = $bookID" +
+                ", b.state = $state";
 
         query = this.addOptionalAttributes(query);
+
         this.updateParams();
 
         return tx.run(query, this.params);
@@ -110,7 +91,8 @@ public class Book implements Transactionable {
         String query = "MATCH (b: Book {bookID: $bookID})" +
                 " SET b.title = $title" +
                 ", b.price = $price" +
-                ", b.bookID = $bookID";
+                ", b.bookID = $bookID" +
+                ", b.state = $state";
 
         query = this.addOptionalAttributes(query);
 
@@ -146,6 +128,10 @@ public class Book implements Transactionable {
 
     public void setPrice(Float price) {
         this.price = price;
+    }
+
+    public void setState(BookState state) {
+        this.state = state;
     }
 
     public void setSemester(Integer semester) {
@@ -219,6 +205,14 @@ public class Book implements Transactionable {
             }
             else{
                 this.params.put("semester", this.semester);
+            }
+        }
+        if(this.state != null){
+            if(this.params.containsKey("state") && !this.params.get("state").equals(this.state)){
+                this.params.replace("state", this.state);
+            }
+            else{
+                this.params.put("state", this.state);
             }
         }
 

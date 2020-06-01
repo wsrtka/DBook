@@ -27,6 +27,7 @@ public class User implements Transactionable {
         this.userID = this.idGenerator.getNextID();
         this.usersOffers = new HashMap<>();
         this.usersInvoices = new HashMap<>();
+        this.params = new HashMap<>();
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -34,6 +35,7 @@ public class User implements Transactionable {
         this.params.put("name", this.name);
         this.params.put("surname", this.surname);
         this.params.put("email", this.email);
+        this.params.put("userID", this.userID);
     }
 
     public HashMap<Integer, Invoice> getUsersInvoices() {
@@ -91,13 +93,16 @@ public class User implements Transactionable {
     private String addOptionalAttributes(String query){
 
         if(this.name != null){
-            query = query + ", b.type = $type";
+            query = query + ", u.name = $name";
         }
         if(this.surname != null){
-            query = query + ", b.publisher = $publisher";
+            query = query + ", u.surname = $surname";
         }
         if(this.email != null){
-            query = query + ", b.semester = $semester";
+            query = query + ", u.email = $email";
+        }
+        if(this.userID != null){
+            query = query + ", u.userID = $userID";
         }
         return query;
     }
@@ -129,6 +134,14 @@ public class User implements Transactionable {
                 this.params.put("email", this.email);
             }
         }
+        if(this.userID != null){
+            if(this.params.containsKey("userID") && !this.params.get("userID").equals(this.userID)){
+                this.params.replace("userID", this.userID);
+            }
+            else{
+                this.params.put("userID", this.userID);
+            }
+        }
     }
 
     @Override
@@ -136,7 +149,8 @@ public class User implements Transactionable {
         String query = "CREATE (u: User)" +
                 " SET c.name = $title" +
                 ",  c.surname = $surname" +
-                ",  c.email = $email";
+                ",  c.email = $email" +
+                ",  c.userID = $userID";
 
         query = this.addOptionalAttributes(query);
         this.updateParams();

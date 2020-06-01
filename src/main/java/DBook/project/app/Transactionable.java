@@ -3,6 +3,8 @@ package DBook.project.app;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Transaction;
 
+import java.util.Map;
+
 public interface Transactionable {
 
     Result addToDB(Transaction tx);
@@ -12,5 +14,7 @@ public interface Transactionable {
     Result getFromDB(Transaction tx);
 
     Result update(Transaction tx);
+
+    void updateParams();
 
 }

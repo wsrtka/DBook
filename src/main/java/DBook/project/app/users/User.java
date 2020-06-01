@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class User implements Transactionable {
+
     private Integer userID;
     private static IdGenerator idGenerator = new IdGenerator();
     private HashMap<Integer, Offer> usersOffers;
@@ -93,5 +94,10 @@ public class User implements Transactionable {
     @Override
     public Result update(Transaction tx) {
         return null;
+    }
+
+    @Override
+    public void updateParams() {
+
     }
 }

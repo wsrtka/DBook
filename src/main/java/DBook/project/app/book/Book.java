@@ -93,8 +93,14 @@ public class Book implements Transactionable {
 
     @Override
     public Result getFromDB(Transaction tx) {
-        //potrzebne?
-        return null;
+
+        String query = "MATCH (b: Book {price: $price, title: $title";
+        query = addOptionalAttributes(query);
+        query = query + "}) RETURN b";
+
+        updateParams();
+
+        return tx.run(query, this.params);
     }
 
     @Override
@@ -133,6 +139,18 @@ public class Book implements Transactionable {
         this.isbn = isbn;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
+    }
+
+    public void setSemester(Integer semester) {
+        this.semester = semester;
+    }
+
     private String addOptionalAttributes(String query){
 
         if(this.type != null){
@@ -159,7 +177,8 @@ public class Book implements Transactionable {
         return bookID;
     }
 
-    private void updateParams(){
+    @Override
+    public void updateParams(){
 
         if(this.isbn != null){
             if(this.params.containsKey("isbn")){

@@ -105,11 +105,29 @@ public class User implements Transactionable {
     public void updateParams() {
 
         if(this.email != null){
-            if(this.params.containsKey("email")){
+            if(this.params.containsKey("email") && !this.params.get("email").equals(this.email)){
                 this.params.replace("email", this.email);
             }
             else{
                 this.params.put("email", this.email);
+            }
+        }
+
+        if(this.name != null){
+            if(this.params.containsKey("name") && !this.params.get("name").equals(this.name)){
+                this.params.replace("name", this.name);
+            }
+            else{
+                this.params.put("name", this.name);
+            }
+        }
+
+        if(this.surname != null){
+            if(this.params.containsKey("surname") && !this.params.get("surname").equals(this.surname)){
+                this.params.replace("surname", this.surname);
+            }
+            else{
+                this.params.put("surname", this.surname);
             }
         }
 

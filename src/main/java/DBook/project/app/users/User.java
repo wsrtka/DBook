@@ -11,6 +11,7 @@ import org.neo4j.driver.Transaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class User implements Transactionable {
     private Integer userID;
@@ -20,6 +21,7 @@ public class User implements Transactionable {
     private String name;
     private String surname;
     private String email;
+    private Map<String, Object> params;
 
     public User(String name, String surname, String email){
         this.userID = this.idGenerator.getNextID();
@@ -28,6 +30,10 @@ public class User implements Transactionable {
         this.name = name;
         this.surname = surname;
         this.email = email;
+
+        this.params.put("name", this.name);
+        this.params.put("surname", this.surname);
+        this.params.put("email", this.email);
     }
 
     public HashMap<Integer, Invoice> getUsersInvoices() {
@@ -81,9 +87,61 @@ public class User implements Transactionable {
 
     }
 
+
+    private String addOptionalAttributes(String query){
+
+        if(this.name != null){
+            query = query + ", b.type = $type";
+        }
+        if(this.surname != null){
+            query = query + ", b.publisher = $publisher";
+        }
+        if(this.email != null){
+            query = query + ", b.semester = $semester";
+        }
+        return query;
+    }
+
+    @Override
+    public void updateParams(){
+
+        if(this.name != null){
+            if(this.params.containsKey("name") && !this.params.get("name").equals(this.name)){
+                this.params.replace("name", this.name);
+            }
+            else{
+                this.params.put("name", this.name);
+            }
+        }
+        if(this.surname != null){
+            if(this.params.containsKey("surname") && !this.params.get("surname").equals(this.surname)){
+                this.params.replace("surname", this.surname);
+            }
+            else{
+                this.params.put("surname", this.surname);
+            }
+        }
+        if(this.email != null){
+            if(this.params.containsKey("email") && !this.params.get("email").equals(this.email)){
+                this.params.replace("email", this.email);
+            }
+            else{
+                this.params.put("email", this.email);
+            }
+        }
+    }
+
     @Override
     public Result addToDB(Transaction tx) {
-        return null;
+        String query = "CREATE (u: User)" +
+                " SET c.name = $title" +
+                ",  c.surname = $surname" +
+                ",  c.email = $email";
+
+        query = this.addOptionalAttributes(query);
+        this.updateParams();
+
+        return tx.run(query, this.params);
     }
 
     @Override
@@ -99,10 +157,5 @@ public class User implements Transactionable {
     @Override
     public Result update(Transaction tx) {
         return null;
-    }
-
-    @Override
-    public void updateParams() {
-
     }
 }

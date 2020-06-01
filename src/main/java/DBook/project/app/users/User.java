@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.neo4j.driver.Values.parameters;
+
 public class User implements Transactionable {
     private Integer userID;
     private static IdGenerator idGenerator = new IdGenerator();
@@ -160,7 +162,10 @@ public class User implements Transactionable {
 
     @Override
     public Result removeFromDB(Transaction tx) {
-        return null;
+        String query = "MATCH (u: User {userID: $userID})" +
+                " DELETE u";
+
+        return tx.run(query, parameters("userID", this.userID));
     }
 
     @Override

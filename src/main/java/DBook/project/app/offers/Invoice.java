@@ -40,7 +40,7 @@ public class Invoice implements Transactionable {
 
     public Integer calculateInvoice(Transaction txt){
         Money result = new Money();
-        this.books.forEach((k, v) ->result.add(v.getFromDB(txt).list().get(1)));
+        this.books.forEach((k, v) ->result.add(Integer.parseInt(v.getFromDB(txt).list().get(1).toString())));
         return result.getValue();
     }
 

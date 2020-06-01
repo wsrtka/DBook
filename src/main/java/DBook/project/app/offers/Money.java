@@ -9,7 +9,7 @@ public class Money {
         this.value = 0;
     }
 
-    public void add(Record value){
+    public void add(Integer value){
         this.value = this.value + value;
     }
 

@@ -136,14 +136,6 @@ public class User implements Transactionable {
                 this.params.put("email", this.email);
             }
         }
-        if(this.userID != null){
-            if(this.params.containsKey("userID") && !this.params.get("userID").equals(this.userID)){
-                this.params.replace("userID", this.userID);
-            }
-            else{
-                this.params.put("userID", this.userID);
-            }
-        }
     }
 
     @Override

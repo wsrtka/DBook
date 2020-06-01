@@ -3,12 +3,17 @@ package DBook.project.app.offers;
 import DBook.project.app.IdGenerator;
 import DBook.project.app.Transactionable;
 import DBook.project.app.book.Book;
-import org.neo4j.driver.Result;
-import org.neo4j.driver.Transaction;
+import org.neo4j.driver.*;
+import org.neo4j.driver.Record;
+import org.neo4j.driver.exceptions.NoSuchRecordException;
+import org.neo4j.driver.summary.ResultSummary;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class Invoice implements Transactionable {
 
@@ -23,7 +28,7 @@ public class Invoice implements Transactionable {
     public Invoice(ArrayList<Book> books){
 
         this.invoiceID = idGen.getNextID();
-
+        this.books = new HashMap<>();
         for(Book book : books){
             this.books.put(book.getBookID(), book);
         }
@@ -33,8 +38,10 @@ public class Invoice implements Transactionable {
 
     }
 
-    public Integer calculateInvoice(){
-        return null;
+    public Integer calculateInvoice(Transaction txt){
+        Money result = new Money();
+        this.books.forEach((k, v) ->result.add(v.getFromDB(txt).list().get(1)));
+        return result.getValue();
     }
 
     @Override
@@ -79,4 +86,5 @@ public class Invoice implements Transactionable {
     public Integer getInvoiceID() {
         return invoiceID;
     }
+
 }

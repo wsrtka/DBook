@@ -221,8 +221,6 @@ public class Book implements Transactionable {
                 this.params.put("semester", this.semester);
             }
         }
-
-
     }
 
 }

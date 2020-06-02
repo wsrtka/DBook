@@ -111,8 +111,9 @@ public class User implements Transactionable {
             query = query + "semester: $semester, ";
         }
         if(author != null){
-            query = query + "author: $author";
+            query = query + "author: $author, ";
         }
+        query = query + "accepted: true, state: Available";
         query = query + "}) RETURN b";
 
         return tx.run(query, this.params);

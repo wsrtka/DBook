@@ -45,6 +45,18 @@ public class Book implements Transactionable {
 
         this.bookID = idGen.getNextID();
     }
+
+    public void disclaimBook(){
+        this.state = BookState.AVAILABLE;
+    }
+
+    public void reserveBook(){
+        this.state = BookState.RESERVED;
+    }
+    public void claimBook(){
+        this.state = BookState.CLAIMED;
+    }
+
     @Override
     public Result addToDB(Transaction tx) {
 

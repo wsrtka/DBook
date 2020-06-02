@@ -78,8 +78,8 @@ public class User implements Transactionable {
         }
     }
 
-    public Integer calculateInvoice(Integer invoiceID){ // pytanie, czy tu nie robimy opcji tylko dla swoich zamowien/offert (bo pracownik potrzebuje miec dostep do wszystkich)
-        return this.usersInvoices.get(invoiceID).calculateInvoice();
+    public Float calculateInvoice(Integer invoiceID, Transaction txt){ // pytanie, czy tu nie robimy opcji tylko dla swoich zamowien/offert (bo pracownik potrzebuje miec dostep do wszystkich)
+        return this.usersInvoices.get(invoiceID).calculateInvoice(txt);
     }
 
 

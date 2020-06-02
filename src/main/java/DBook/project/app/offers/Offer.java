@@ -36,8 +36,13 @@ public class Offer implements Transactionable {
     }
 
     public ArrayList<Book> getUnsoldBooks(){
-        // tu trzeba zrobić zapytanie do bazy
-        return null;
+        ArrayList<Book> unsoldBooks = new ArrayList<>();
+        this.books.forEach((k, v) ->{
+            if(!v.isSold()){
+                unsoldBooks.add(v);
+            }
+        });
+        return unsoldBooks;
     }
 
     public Integer calculateOfferRevenue(){

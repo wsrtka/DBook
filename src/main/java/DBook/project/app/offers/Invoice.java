@@ -49,6 +49,11 @@ public class Invoice implements Transactionable {
 
         return sum;
     }
+    public Float calculateInvoice(Transaction txt){
+        Money result = new Money();
+        this.books.forEach((k, v) ->result.add(Float.parseFloat(v.getFromDB(txt).list().get(1).toString())));
+        return result.getValue();
+    }
 
     private Result addBook(Book b, Transaction tx) {
 
@@ -65,12 +70,6 @@ public class Invoice implements Transactionable {
                 "CREATE (i)-[:HAS_A]->(b)";
 
         return tx.run(query, parameters("invoiceID", this.invoiceID, "bookID", b.getBookID()));
-    }
-
-    public Float calculateInvoice(Transaction txt){
-        Money result = new Money();
-        this.books.forEach((k, v) ->result.add(Float.parseFloat(v.getFromDB(txt).list().get(1).toString())));
-        return result.getValue();
     }
 
     @Override

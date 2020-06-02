@@ -1,19 +1,17 @@
 package DBook.project.app.offers;
 
-import org.neo4j.driver.Record;
-
 public class Money {
-    private Integer value;
+    private Float value;
 
     public Money(){
-        this.value = 0;
+        this.value = new Float(0.0);
     }
 
-    public void add(Integer value){
-        this.value = this.value + value;
+    public void add(Float subvalue){
+        this.value += subvalue;
     }
 
-    public Integer getValue(){
+    public Float getValue(){
         return this.value;
     }
 }

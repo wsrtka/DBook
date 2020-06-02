@@ -66,7 +66,6 @@ public class Book implements Transactionable {
 
         this.bookID = idGen.getNextID();
     }
-
     @Override
     public Result addToDB(Transaction tx) {
 

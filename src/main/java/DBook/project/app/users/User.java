@@ -54,14 +54,10 @@ public class User implements Transactionable {
         this.usersOffers.put(offerID, offer);
     }
 
-    public void addInvoice(ArrayList<Book> books){ // musimy ustalić jak mamy dodać książki (obiekty typu Book)
+    public void addInvoice(ArrayList<Book> books, Transaction txt){ // musimy ustalić jak mamy dodać książki (obiekty typu Book)
         Integer invoiceID = this.idGenerator.getNextID();
-        Invoice invoice = new Invoice(books);
+        Invoice invoice = new Invoice(books, txt);
         this.usersInvoices.put(invoiceID, invoice);
-    }
-
-    public void createBookInfo(String title, Float price, BookType type, String publisher, String subject, Integer semester, String author, String isbn){
-        Integer bookInfoID = this.idGenerator.getNextID();
     }
 
     public void listMyInvoices(){
@@ -83,11 +79,7 @@ public class User implements Transactionable {
     }
 
 
-    public void listBooksWithSpecifiedBookInfo(){ // ma zwrocicliste ksiazek z kategorii, ktora nas interesuje
-
-    }
-
-    public void listAllBookInfos(){ // ma wyswietlic wszyskie book info (moze by jakos z baza to polaczyc?)
+    public void listBooks(){ // ma zwrocicliste ksiazek z kategorii, ktora nas interesuje
 
     }
 

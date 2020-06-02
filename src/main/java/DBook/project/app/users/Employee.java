@@ -2,6 +2,7 @@ package DBook.project.app.users;
 
 import DBook.project.app.book.Book;
 import DBook.project.app.DBookApplication;
+import org.neo4j.driver.Transaction;
 
 import java.util.ArrayList;
 
@@ -33,12 +34,11 @@ public class Employee extends User{
         }
     }
 
-    @Override
-    public Integer calculateInvoice(Integer userID){ // ma zwrocic ile ma dany uzytkownik ma zaplacic
+    public Float calculateInvoice(Integer userID, Transaction txt){ // ma zwrocic ile ma dany uzytkownik ma zaplacic
         ArrayList<Integer> invoicesIDList = new ArrayList(this.dBookApplication.getUserArrayList().get(userID).getUsersOffers().entrySet());
-        Integer result = 0;
+        Float result = new Float(0.0);
         for (Integer invoiceID: invoicesIDList) {
-            result += this.dBookApplication.getUserArrayList().get(userID).calculateInvoice(invoiceID);
+            result += this.dBookApplication.getUserArrayList().get(userID).calculateInvoice(invoiceID, txt);
         }
         return result;
     }
@@ -74,10 +74,6 @@ public class Employee extends User{
     }
 
     public void deleteUnacceptedInvoices(){
-
-    }
-
-    public void deleteBookInfo(Integer bookInfoID){
 
     }
 

@@ -3,12 +3,17 @@ package DBook.project.app.offers;
 import DBook.project.app.IdGenerator;
 import DBook.project.app.Transactionable;
 import DBook.project.app.book.Book;
-import org.neo4j.driver.Result;
-import org.neo4j.driver.Transaction;
+import org.neo4j.driver.*;
+import org.neo4j.driver.Record;
+import org.neo4j.driver.exceptions.NoSuchRecordException;
+import org.neo4j.driver.summary.ResultSummary;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static org.neo4j.driver.Values.parameters;
 
@@ -25,7 +30,7 @@ public class Invoice implements Transactionable {
     public Invoice(ArrayList<Book> books, Transaction tx){
 
         this.invoiceID = idGen.getNextID();
-
+        this.books = new HashMap<>();
         for(Book book : books){
             this.addBook(book, tx);
         }
@@ -45,13 +50,13 @@ public class Invoice implements Transactionable {
         return sum;
     }
 
-    private Result addBook(Book b, Transaction tx){
+    private Result addBook(Book b, Transaction tx) {
 
         this.books.put(b.getBookID(), b);
 
         Result res = b.getFromDB(tx);
 
-        if(!res.hasNext()){
+        if (!res.hasNext()) {
             b.addToDB(tx);
         }
 
@@ -60,7 +65,12 @@ public class Invoice implements Transactionable {
                 "CREATE (i)-[:HAS_A]->(b)";
 
         return tx.run(query, parameters("invoiceID", this.invoiceID, "bookID", b.getBookID()));
+    }
 
+    public Float calculateInvoice(Transaction txt){
+        Money result = new Money();
+        this.books.forEach((k, v) ->result.add(Float.parseFloat(v.getFromDB(txt).list().get(1).toString())));
+        return result.getValue();
     }
 
     @Override
@@ -93,7 +103,7 @@ public class Invoice implements Transactionable {
     }
 
     @Override
-    public Result update(Transaction tx)git  {
+    public Result update(Transaction tx){
         return null;
     }
 
@@ -105,4 +115,5 @@ public class Invoice implements Transactionable {
     public Integer getInvoiceID() {
         return invoiceID;
     }
+
 }

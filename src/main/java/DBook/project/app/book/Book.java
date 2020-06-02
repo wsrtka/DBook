@@ -45,7 +45,6 @@ public class Book implements Transactionable {
 
         this.bookID = idGen.getNextID();
     }
-
     @Override
     public Result addToDB(Transaction tx) {
 
@@ -155,6 +154,9 @@ public class Book implements Transactionable {
         if(this.isbn != null){
             query = query + ", b.isbn = $isbn";
         }
+        if(this.isbn != null){
+            query = query + ", b.sold = $sold";
+        }
 
         return query;
 
@@ -215,7 +217,6 @@ public class Book implements Transactionable {
                 this.params.put("state", this.state);
             }
         }
-
 
     }
 

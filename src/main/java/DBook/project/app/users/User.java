@@ -16,35 +16,28 @@ import java.util.Map;
 import static org.neo4j.driver.Values.parameters;
 
 public class User implements Transactionable {
-
     private Integer userID;
-
     private static IdGenerator idGenerator = new IdGenerator();
-
+    private HashMap<Integer, Offer> usersOffers;
+    private HashMap<Integer, Invoice> usersInvoices;
     private String name;
     private String surname;
     private String email;
-
-    private HashMap<Integer, Offer> usersOffers;
-    private HashMap<Integer, Invoice> usersInvoices;
-
     private Map<String, Object> params;
 
     public User(String name, String surname, String email){
-
-        this.userID = idGenerator.getNextID();
-
+        this.userID = this.idGenerator.getNextID();
+        this.usersOffers = new HashMap<>();
+        this.usersInvoices = new HashMap<>();
+        this.params = new HashMap<>();
         this.name = name;
         this.surname = surname;
         this.email = email;
 
-        this.usersOffers = new HashMap<>();
-        this.usersInvoices = new HashMap<>();
-
-        this.params = new HashMap<>();
+        this.params.put("name", this.name);
+        this.params.put("surname", this.surname);
+        this.params.put("email", this.email);
         this.params.put("userID", this.userID);
-        this.updateParams();
-
     }
 
     public HashMap<Integer, Invoice> getUsersInvoices() {
@@ -56,29 +49,29 @@ public class User implements Transactionable {
     }
 
     public void addOffer(ArrayList<Book> books){
-
+        Integer offerID = this.idGenerator.getNextID();
         Offer offer = new Offer(books);
-        this.usersOffers.put(offer.getOfferID(), offer);
-
+        this.usersOffers.put(offerID, offer);
     }
 
-    public void addInvoice(ArrayList<Book> books){
-        // TODO: musimy ustalić jak mamy dodać książki (obiekty typu Book)
-        Invoice invoice = new Invoice( books);
-        this.usersInvoices.put(invoice.getInvoiceID(), invoice);
-
+    public void addInvoice(ArrayList<Book> books){ // musimy ustalić jak mamy dodać książki (obiekty typu Book)
+        Integer invoiceID = this.idGenerator.getNextID();
+        Invoice invoice = new Invoice(books);
+        this.usersInvoices.put(invoiceID, invoice);
     }
 
-    public void listUserInvoices(){
-//        TODO: wyciągać Invoice'y użytkownika z bazy
+    public void createBookInfo(String title, Float price, BookType type, String publisher, String subject, Integer semester, String author, String isbn){
+        Integer bookInfoID = this.idGenerator.getNextID();
+    }
+
+    public void listMyInvoices(){
         ArrayList<Integer> invoicesIDList = new ArrayList(usersInvoices.entrySet());
         for (Integer invoiceID: invoicesIDList) {
             System.out.println(invoiceID+";");
         }
     }
 
-    public void listUserOffers(){
-//        TODO: wyciągać Offer'y użytkownika z bazy
+    public void listMyOffers(){
         ArrayList<Offer> offersIDList = new ArrayList(usersOffers.entrySet());
         for(Offer offerID : offersIDList){
             System.out.println(offerID + ";");
@@ -89,70 +82,35 @@ public class User implements Transactionable {
         return this.usersInvoices.get(invoiceID).calculateInvoice();
     }
 
-    @Override
-    public Result addToDB(Transaction tx) {
 
-        String query = "CREATE (u: User) " +
-                "SET u.userID = $userID, " +
-                "u.name = $name, " +
-                "u.surname = $surname, " +
-                "u.email = $email";
-
-        this.updateParams();
-
-        return tx.run(query, this.params);
+    public void listBooksWithSpecifiedBookInfo(){ // ma zwrocicliste ksiazek z kategorii, ktora nas interesuje
 
     }
 
-    @Override
-    public Result removeFromDB(Transaction tx) {
-
-        String query = "MATCH (u: User {$userID: $userID{)" +
-                "DELETE u";
-
-        return tx.run(query, parameters("userID", this.userID));
+    public void listAllBookInfos(){ // ma wyswietlic wszyskie book info (moze by jakos z baza to polaczyc?)
 
     }
 
-    @Override
-    public Result getFromDB(Transaction tx) {
 
-        String query = "MATCH (u: User {u.name: $name, " +
-                "u.surname: $surname " +
-                "u.email: $email}) " +
-                "RETURN u";
+    private String addOptionalAttributes(String query){
 
-        this.updateParams();
-
-        return tx.run(query, params);
-
-    }
-
-    @Override
-    public Result update(Transaction tx) {
-//      TODO: ustalić czy konieczne, możemy zrobić User final
-        String query = "MATCH (u: User {u.userID: $userID}) " +
-                "SET u.name = $name " +
-                "u.surname = $surname " +
-                "u.email = $email";
-
-        this.updateParams();
-
-        return tx.run(query, this.params);
-
-    }
-
-    @Override
-    public void updateParams() {
-
-        if(this.email != null){
-            if(this.params.containsKey("email") && !this.params.get("email").equals(this.email)){
-                this.params.replace("email", this.email);
-            }
-            else{
-                this.params.put("email", this.email);
-            }
+        if(this.name != null){
+            query = query + ", u.name = $name";
         }
+        if(this.surname != null){
+            query = query + ", u.surname = $surname";
+        }
+        if(this.email != null){
+            query = query + ", u.email = $email";
+        }
+        if(this.userID != null){
+            query = query + ", u.userID = $userID";
+        }
+        return query;
+    }
+
+    @Override
+    public void updateParams(){
 
         if(this.name != null){
             if(this.params.containsKey("name") && !this.params.get("name").equals(this.name)){
@@ -162,7 +120,6 @@ public class User implements Transactionable {
                 this.params.put("name", this.name);
             }
         }
-
         if(this.surname != null){
             if(this.params.containsKey("surname") && !this.params.get("surname").equals(this.surname)){
                 this.params.replace("surname", this.surname);
@@ -171,6 +128,61 @@ public class User implements Transactionable {
                 this.params.put("surname", this.surname);
             }
         }
+        if(this.email != null){
+            if(this.params.containsKey("email") && !this.params.get("email").equals(this.email)){
+                this.params.replace("email", this.email);
+            }
+            else{
+                this.params.put("email", this.email);
+            }
+        }
+    }
 
+    @Override
+    public Result addToDB(Transaction tx) {
+        String query = "CREATE (u: User)" +
+                " SET c.name = $title" +
+                ",  c.surname = $surname" +
+                ",  c.email = $email" +
+                ",  c.userID = $userID";
+
+        query = this.addOptionalAttributes(query);
+        this.updateParams();
+
+        return tx.run(query, this.params);
+    }
+
+    @Override
+    public Result removeFromDB(Transaction tx) {
+        String query = "MATCH (u: User {userID: $userID})" +
+                " DELETE u";
+
+        return tx.run(query, parameters("userID", this.userID));
+    }
+
+    @Override
+    public Result getFromDB(Transaction tx) {
+        String query = "MATCH (u: User {name: $name, surname: $surname, email: $email";
+        query = addOptionalAttributes(query);
+        query = query + "}) RETURN u";
+
+        updateParams();
+
+        return tx.run(query, this.params);
+    }
+
+    @Override
+    public Result update(Transaction tx) {
+        String query = "MATCH (u: User {userID: $userID})" +
+                " SET u.name = $name" +
+                ", u.surname = $surname" +
+                ", u.email = $email" +
+                ", u.userID = $userID";
+
+        query = this.addOptionalAttributes(query);
+
+        this.updateParams();
+
+        return tx.run(query, this.params);
     }
 }

@@ -45,8 +45,13 @@ public class Offer implements Transactionable {
         return unsoldBooks;
     }
 
-    public Integer calculateOfferRevenue(){
-        //tu trzeba zrobić zapytanie do bazy
+    public Float calculateOfferRevenue(){
+        Money revenue = new Money();
+        this.books.forEach((k, v) ->{
+            if(v.isSold()){
+                revenue.add(v.getPrice());
+            }
+        });
         return null;
     }
 

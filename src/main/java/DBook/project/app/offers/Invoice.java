@@ -41,13 +41,9 @@ public class Invoice implements Transactionable {
     }
 
     public Float calculateInvoice(){
-        Float sum = new Float(0);
-
-        for(Book book : this.books.values()){
-            sum = sum + book.getPrice();
-        }
-
-        return sum;
+        Money result = new Money();
+        this.books.forEach((k, v) ->result.add(v.getPrice()));
+        return result.getValue();
     }
     public Float calculateInvoice(Transaction txt){
         Money result = new Money();

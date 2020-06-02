@@ -69,6 +69,10 @@ public class Offer implements Transactionable {
         this.accepted = true;
     }
 
+    public boolean isAccepted() {
+        return this.accepted;
+    }
+
     @Override
     public Result addToDB(Transaction tx) {
 

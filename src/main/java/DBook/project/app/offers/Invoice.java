@@ -73,6 +73,13 @@ public class Invoice implements Transactionable {
 
         return tx.run(query, parameters("invoiceID", this.invoiceID, "bookID", b.getBookID()));
     }
+    public void acceptInvoice(){
+        this.accepted = true;
+    }
+
+    public boolean isAccepted() {
+        return this.accepted;
+    }
 
     @Override
     public Result addToDB(Transaction tx) {

@@ -77,19 +77,57 @@ public class Employee extends User{
         booksOffer.addAll(offer.getBooks().values());
         return booksOffer;
     }
-    public void acceptInvoice(Integer invoiceID, ArrayList<Book> acceptedBooks){// akceptuje zamowienie (zostalo zaplacone) i od razu usuwa te ksiazki z zamowienia, ktore nie zostaly kupione na miejscu
+    public void acceptInvoice(Integer invoiceID, ArrayList<Book> acceptedBooks, Integer userID, Transaction tx){// akceptuje zamowienie (zostalo zaplacone) i od razu usuwa te ksiazki z zamowienia, ktore nie zostaly kupione na miejscu
+            Invoice invoice = dBookApplication.getUserArrayList().get(userID).getUsersInvoices().get(invoiceID);
+            invoice.acceptInvoice();
+            for(Book book:acceptedBooks){
+                book.claimBook();
+                book.update(tx);
+            }
 
+            invoice.getInvoiceBooks().forEach((k, v)->{
+                if(!acceptedBooks.contains(v)){
+                    v.disclaimBook();
+                    v.update(tx);
+                }
+            });
     }
 
-    public void acceptOffer(Integer offerID, ArrayList<Book> acceptedBooks){//akceptuje zamowienie (ksiazki zostaly przyniesione) i od razu usuwa te ksiazki z zamowienia, ktore nie zostaly przyjete/przyniesione
+    public void acceptOffer(Integer offerID, ArrayList<Book> acceptedBooks, Integer userID, Transaction tx){//akceptuje zamowienie (ksiazki zostaly przyniesione) i od razu usuwa te ksiazki z zamowienia, ktore nie zostaly przyjete/przyniesione
+        Offer offer = dBookApplication.getUserArrayList().get(userID).getUsersOffers().get(offerID);
+        offer.acceptOffer();
+        for(Book book:acceptedBooks){
+            book.claimBook();
+            book.update(tx);
+        }
 
+        offer.getOfferBooks().forEach((k, v)->{
+            if(!acceptedBooks.contains(v)){
+                v.removeFromDB(tx);
+                offer.getBooks().remove(v); // nie jestem pewien czy zadziała to wywołanie poprawnie
+            }
+        });
     }
 
-    public void deleteUnacceptedOffers(){
-
+    public void deleteUnacceptedOffers(Transaction tx){
+        for(User user : dBookApplication.getUserArrayList()){
+            user.getUsersOffers().forEach((k, v)->{
+                if(v.isAccepted()){
+                    v.removeFromDB(tx);
+                    user.getUsersOffers().remove(v); // nie jestem pewien czy zadziała
+                }
+            });
+        }
     }
 
-    public void deleteUnacceptedInvoices(){
-
+    public void deleteUnacceptedInvoices(Transaction tx){
+        for(User user : dBookApplication.getUserArrayList()){
+            user.getUsersInvoices().forEach((k, v)->{
+                if(v.isAccepted()){
+                    v.removeFromDB(tx);
+                    user.getUsersInvoices().remove(v); // nie jestem pewien czy zadziała
+                }
+            });
+        }
     }
 }

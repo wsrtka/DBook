@@ -79,7 +79,7 @@ public class User implements Transactionable {
     }
 
 
-    public void listBooks(){ // ma zwrocicliste ksiazek z kategorii, ktora nas interesuje
+    public void listBooks(){ // TO BĘDZIE NIEZLA KOLUBRYNA
 
     }
 

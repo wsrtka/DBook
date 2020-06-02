@@ -76,8 +76,4 @@ public class Employee extends User{
     public void deleteUnacceptedInvoices(){
 
     }
-
-    public void deleteUser(Integer userID){ // czy potrzebne?
-
-    }
 }

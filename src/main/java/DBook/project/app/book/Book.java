@@ -23,6 +23,7 @@ public class Book implements Transactionable {
     private Integer semester;
     private String author;
     private String isbn;
+    private Boolean sold;
 
     private Map<String, Object> params;
 
@@ -53,7 +54,7 @@ public class Book implements Transactionable {
         this.semester = semester;
         this.author = author;
         this.isbn = isbn;
-
+        this.sold = false;
         this.bookID = idGen.getNextID();
     }
 
@@ -63,7 +64,7 @@ public class Book implements Transactionable {
 
         this.title = title;
         this.price = price;
-
+        this.sold = false;
         this.bookID = idGen.getNextID();
     }
     @Override
@@ -72,6 +73,7 @@ public class Book implements Transactionable {
         String query = "CREATE (b: Book)" +
                 " SET b.title = $title" +
                 ",  b.price = $price" +
+                ",  b.sold = $sold" +
                 ",  b.bookID = $bookID";
 
         query = this.addOptionalAttributes(query);
@@ -109,6 +111,7 @@ public class Book implements Transactionable {
         String query = "MATCH (b: Book {bookID: $bookID})" +
                 " SET b.title = $title" +
                 ", b.price = $price" +
+                ", b.sold = $sold" +
                 ", b.bookID = $bookID";
 
         query = this.addOptionalAttributes(query);
@@ -168,6 +171,9 @@ public class Book implements Transactionable {
         if(this.isbn != null){
             query = query + ", b.isbn = $isbn";
         }
+        if(this.isbn != null){
+            query = query + ", b.sold = $sold";
+        }
 
         return query;
 
@@ -218,6 +224,14 @@ public class Book implements Transactionable {
             }
             else{
                 this.params.put("semester", this.semester);
+            }
+        }
+        if(this.sold != null){
+            if(this.params.containsKey("sold") && !this.params.get("sold").equals(this.sold)){
+                this.params.replace("sold", this.sold);
+            }
+            else{
+                this.params.put("sold", this.sold);
             }
         }
     }

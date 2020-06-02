@@ -51,6 +51,10 @@ public class Invoice implements Transactionable {
         return result.getValue();
     }
 
+    public HashMap<Integer, Book> getInvoiceBooks(){
+        return  this.books;
+    }
+
     private Result addBook(Book b, Transaction tx) {
 
         this.books.put(b.getBookID(), b);

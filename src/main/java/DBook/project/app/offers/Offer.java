@@ -34,7 +34,9 @@ public class Offer implements Transactionable {
         this.params.put("offerID", this.offerID);
 
     }
-
+    public HashMap<Integer, Book> getBooks(){
+        return this.books;
+    }
     public ArrayList<Book> getUnsoldBooks(){
         ArrayList<Book> unsoldBooks = new ArrayList<>();
         this.books.forEach((k, v) ->{
@@ -43,6 +45,10 @@ public class Offer implements Transactionable {
             }
         });
         return unsoldBooks;
+    }
+
+    public HashMap<Integer, Book> getOfferBooks(){
+        return this.books;
     }
 
     public Float calculateOfferRevenue(){

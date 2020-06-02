@@ -2,6 +2,9 @@ package DBook.project.app.users;
 
 import DBook.project.app.book.Book;
 import DBook.project.app.DBookApplication;
+import DBook.project.app.offers.Invoice;
+import DBook.project.app.offers.Money;
+import DBook.project.app.offers.Offer;
 import org.neo4j.driver.Transaction;
 
 import java.util.ArrayList;
@@ -43,23 +46,36 @@ public class Employee extends User{
         return result;
     }
 
-    public void calculateOffer(Integer userID){ //ma zwrocic ile danemu uzytkownikowi mamy wydac pieniedzy
-
+    public Float calculateOffer(Integer userID, Transaction tx){
+        User user = dBookApplication.getUserArrayList().get(userID);
+        Money money = new Money();
+        user.getUsersOffers().forEach((k, v) ->money.add(v.calculateOfferRevenue()));
+        return money.getValue();
     }
 
-    public void listBooksToReturn(Integer userID){ //listuje ksiązki, które mamy zwrócić klientowi
+    public ArrayList<Book> listBooksToReturn(Integer userID){ //listuje ksiązki, które mamy zwrócić klientowi
+        ArrayList<Book> booksToReturn = new ArrayList<>();
+        User user = dBookApplication.getUserArrayList().get(userID);
 
+        user.getUsersOffers().forEach((k, v) -> booksToReturn.addAll(v.getUnsoldBooks()));
+
+        return booksToReturn;
     }
 
-    public void listOfferBooks(Integer offerID){ //wypisuje ksiazki, ktore maja bycprzyniesione przez klienta
+    public ArrayList<Book> listInvoiceBooks(Integer invoiceID, Integer userID){ //wypisuje ksiazki, ktore maja byc przyniesione dla klienta
+        ArrayList<Book> booksToBeBrought = new ArrayList<>();
+        Invoice invoice = dBookApplication.getUserArrayList().get(userID).getUsersInvoices().get(invoiceID);
 
+        booksToBeBrought.addAll(invoice.getInvoiceBooks().values());
+        return booksToBeBrought;
     }
 
-    public void listInvoiceBooks(Integer invoiceID){ //wypisuje ksiazki, ktore maja byc przyniesione dla klienta
+    public ArrayList<Book> listOrderBooks(Integer orderID, Integer userID){// wypisuje ksiazki, ktore maja byc przyniesione przez klienta
+        ArrayList<Book> booksOffer = new ArrayList<>();
 
-    }
-    public void listOrderBooks(Integer orderID){// wypisuje ksiazki, ktore maja byc przyniesione przez klienta
-
+        Offer offer = dBookApplication.getUserArrayList().get(userID).getUsersOffers().get(orderID);
+        booksOffer.addAll(offer.getBooks().values());
+        return booksOffer;
     }
     public void acceptInvoice(Integer invoiceID, ArrayList<Book> acceptedBooks){// akceptuje zamowienie (zostalo zaplacone) i od razu usuwa te ksiazki z zamowienia, ktore nie zostaly kupione na miejscu
 

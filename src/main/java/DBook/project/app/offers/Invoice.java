@@ -27,6 +27,8 @@ public class Invoice implements Transactionable {
 
     private Map<String, Object> params;
 
+    private boolean accepted;
+
     public Invoice(ArrayList<Book> books, Transaction tx){
 
         this.invoiceID = idGen.getNextID();
@@ -34,7 +36,7 @@ public class Invoice implements Transactionable {
         for(Book book : books){
             this.addBook(book, tx);
         }
-
+        this.accepted = false;
         this.params = new HashMap<>();
         this.params.put("InvoiceID", this.invoiceID);
 
@@ -84,7 +86,7 @@ public class Invoice implements Transactionable {
     @Override
     public Result removeFromDB(Transaction tx) {
 
-        String query = "MATCH (i: Invoice {i.invoiceID: $invoiceID}) " +
+        String query = "MATCH (i: Invoice {i.invoiceID: $invoiceID, accepted: $accepted}}) " +
                 "DELETE i";
 
         return tx.run(query, this.params);
@@ -103,12 +105,22 @@ public class Invoice implements Transactionable {
 
     @Override
     public Result update(Transaction tx){
-        return null;
+        String query = "MATCH (i: Invoice {invoiceID: $invoiceID})" +
+                " SET o.accepted = $accepted";
+        this.updateParams();
+        return tx.run(query, this.params);
     }
 
     @Override
     public void updateParams() {
-
+        if(this.accepted){
+            if(this.params.containsKey("accepted") && !this.params.get("accepted").equals(this.accepted)){
+                this.params.replace("accepted", this.accepted);
+            }
+            else{
+                this.params.put("accepted", this.accepted);
+            }
+        }
     }
 
     public Integer getInvoiceID() {

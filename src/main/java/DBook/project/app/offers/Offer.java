@@ -20,6 +20,8 @@ public class Offer implements Transactionable {
 
     private Map<String, Object> params;
 
+    private boolean accepted;
+
     public Offer(ArrayList<Book> books){
 
         this.offerID = idGen.getNextID();
@@ -29,9 +31,11 @@ public class Offer implements Transactionable {
         for(Book book : books){
             this.books.put(book.getBookID(), book);
         }
+        this.accepted = false;
 
         this.params = new HashMap<>();
         this.params.put("offerID", this.offerID);
+        this.params.put("accepted", this.accepted);
 
     }
     public HashMap<Integer, Book> getBooks(){
@@ -61,10 +65,14 @@ public class Offer implements Transactionable {
         return null;
     }
 
+    public void acceptOffer(){
+        this.accepted = true;
+    }
+
     @Override
     public Result addToDB(Transaction tx) {
 
-        String query = "CREATE (o: Offer {offerID: $offerID})";
+        String query = "CREATE (o: Offer {offerID: $offerID, accepted: $accepted})";
 
         return tx.run(query, this.params);
 
@@ -92,11 +100,21 @@ public class Offer implements Transactionable {
 
     @Override
     public Result update(Transaction tx) {
-        return null;
+        String query = "MATCH (o: Offer {offerID: $offerID})" +
+                " SET o.accepted = $accepted";
+        this.updateParams();
+        return tx.run(query, this.params);
     }
 
     @Override
     public void updateParams() {
-
+        if(this.accepted){
+            if(this.params.containsKey("accepted") && !this.params.get("accepted").equals(this.accepted)){
+                this.params.replace("accepted", this.accepted);
+            }
+            else{
+                this.params.put("accepted", this.accepted);
+            }
+        }
     }
 }

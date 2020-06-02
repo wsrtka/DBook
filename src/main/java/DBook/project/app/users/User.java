@@ -2,6 +2,7 @@ package DBook.project.app.users;
 
 import DBook.project.app.Transactionable;
 import DBook.project.app.book.Book;
+import DBook.project.app.book.BookState;
 import DBook.project.app.book.BookType;
 import DBook.project.app.IdGenerator;
 import DBook.project.app.offers.Invoice;
@@ -78,9 +79,42 @@ public class User implements Transactionable {
         return this.usersInvoices.get(invoiceID).calculateInvoice(txt);
     }
 
+    private String title;
+    private Float price;
+    private BookType type;
+    private String publisher;
+    private Integer semester;
+    private String author;
+    private String isbn;
+    private BookState state;
 
-    public void listBooks(){ // TO BĘDZIE NIEZLA KOLUBRYNA
+    public Result listBooks(String title, BookType type, String publisher, Integer semester, String author, Transaction tx){
+        Map<String,Object> params = new HashMap<>();
+        params.put("title", title);
+        params.put("type", type);
+        params.put("publisher", publisher);
+        params.put("semester", semester);
+        params.put("author", author);
 
+        String query = "MATCH (b: Book {price: $price, title: $title";
+        if(title != null){
+            query = query + "title: $title, ";
+        }
+        if(type != null){
+            query = query + "type: $type, ";
+        }
+        if(publisher != null){
+            query = query + "publisher: $publisher, ";
+        }
+        if(semester != null){
+            query = query + "semester: $semester, ";
+        }
+        if(author != null){
+            query = query + "author: $author";
+        }
+        query = query + "}) RETURN b";
+
+        return tx.run(query, this.params);
     }
 
 

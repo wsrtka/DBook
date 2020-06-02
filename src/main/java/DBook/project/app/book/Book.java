@@ -27,23 +27,21 @@ public class Book implements Transactionable {
 
     private Map<String, Object> params;
 
-    private Book(){
-        this.params = new HashMap<>();
-        this.updateParams();
-        this.params.put("title", this.title);
-        this.params.put("price", this.price);
-        this.params.put("bookID", this.bookID);
-    }
-
     // minimal required book info
     public Book(String title, float price){
-        this();
 
         this.title = title;
         this.price = price;
         this.state = BookState.AVAILABLE;
 
         this.bookID = idGen.getNextID();
+
+        this.params = new HashMap<>();
+        this.updateParams();
+        this.params.put("title", this.title);
+        this.params.put("price", this.price);
+        this.params.put("bookID", this.bookID);
+
     }
 
     public void disclaimBook(){
@@ -93,7 +91,7 @@ public class Book implements Transactionable {
     public Result getFromDB(Transaction tx) {
 
         String query = "MATCH (b: Book {price: $price, title: $title";
-        query = addOptionalAttributes(query);
+//        query = addOptionalAttributes(query);
         query = query + "}) RETURN b";
 
         updateParams();

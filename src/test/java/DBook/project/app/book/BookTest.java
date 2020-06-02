@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.neo4j.driver.AccessMode;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.SessionConfig;
+import org.neo4j.driver.summary.ResultSummary;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,7 +45,8 @@ public class BookTest {
 
         try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
             this.book.setAuthor("Henryk Jerzy Chmielecki");
-            s.writeTransaction(book::update);
+            ResultSummary summary = s.writeTransaction(book::update).consume();
+            System.out.println(summary.toString());
         }
 
     }

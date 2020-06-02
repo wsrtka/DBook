@@ -60,6 +60,10 @@ public class DBookApplication {
 		return userArrayList;
 	}
 
+	public Driver getDriver(){
+		return driver;
+	}
+
 	public static void main(String[] args) {
 
 		DBookApplication dBookApplication = new DBookApplication();

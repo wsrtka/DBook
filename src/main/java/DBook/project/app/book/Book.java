@@ -27,7 +27,7 @@ public class Book implements Transactionable {
 
     private Map<String, Object> params;
 
-    public Book(){
+    private Book(){
         this.params = new HashMap<>();
         this.updateParams();
         this.params.put("title", this.title);
@@ -49,15 +49,19 @@ public class Book implements Transactionable {
     public void disclaimBook(){
         this.state = BookState.AVAILABLE;
     }
+
     public void reserveBook(){
         this.state = BookState.RESERVED;
     }
+
     public void claimBook(){
         this.state = BookState.CLAIMED;
     }
+
     public boolean isSold(){
         return this.state == BookState.CLAIMED;
     }
+
     @Override
     public Result addToDB(Transaction tx) {
 
@@ -223,11 +227,11 @@ public class Book implements Transactionable {
             }
         }
         if(this.state != null){
-            if(this.params.containsKey("state") && !this.params.get("state").equals(this.state)){
-                this.params.replace("state", this.state);
+            if(this.params.containsKey("state") && !this.params.get("state").equals(this.state.toString())){
+                this.params.replace("state", this.state.toString());
             }
             else{
-                this.params.put("state", this.state);
+                this.params.put("state", this.state.toString());
             }
         }
 
@@ -235,5 +239,9 @@ public class Book implements Transactionable {
 
     public Float getPrice() {
         return price;
+    }
+
+    public BookState getState() {
+        return state;
     }
 }

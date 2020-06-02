@@ -28,6 +28,7 @@ public class User implements Transactionable {
 
     public User(String name, String surname, String email){
         this.userID = this.idGenerator.getNextID();
+
         this.usersOffers = new HashMap<>();
         this.usersInvoices = new HashMap<>();
         this.params = new HashMap<>();

@@ -37,16 +37,16 @@ public class Employee extends User{
         }
     }
 
-    public Float calculateInvoice(Integer userID, Transaction txt){ // ma zwrocic ile ma dany uzytkownik ma zaplacic
+    public Double calculateInvoice(Integer userID, Transaction txt){ // ma zwrocic ile ma dany uzytkownik ma zaplacic
         ArrayList<Integer> invoicesIDList = new ArrayList(this.dBookApplication.getUserArrayList().get(userID).getUsersOffers().entrySet());
-        Float result = new Float(0.0);
+        Double result = new Double(0.0);
         for (Integer invoiceID: invoicesIDList) {
             result += this.dBookApplication.getUserArrayList().get(userID).calculateInvoice(invoiceID, txt);
         }
         return result;
     }
 
-    public Float calculateOffer(Integer userID, Transaction tx){
+    public Double calculateOffer(Integer userID, Transaction tx){
         User user = dBookApplication.getUserArrayList().get(userID);
         Money money = new Money();
         user.getUsersOffers().forEach((k, v) ->money.add(v.calculateOfferRevenue()));

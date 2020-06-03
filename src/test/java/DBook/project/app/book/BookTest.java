@@ -52,7 +52,7 @@ public class BookTest {
                         }
                     }
             );
-            System.out.println(b);
+            System.out.println(b.getPrice());
         }
 
     }

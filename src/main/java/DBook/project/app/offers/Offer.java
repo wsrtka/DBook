@@ -55,7 +55,7 @@ public class Offer implements Transactionable {
         return this.books;
     }
 
-    public Float calculateOfferRevenue(){
+    public Double calculateOfferRevenue(){
         Money revenue = new Money();
         this.books.forEach((k, v) ->{
             if(v.isSold()){

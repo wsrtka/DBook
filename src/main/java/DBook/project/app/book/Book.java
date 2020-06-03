@@ -228,7 +228,7 @@ public class Book implements Transactionable {
 
         if (recMap.containsKey("title") && recMap.containsKey("price") && recMap.containsKey("bookID")) {
             b = new Book((String) recMap.get("title"), new Double((double) recMap.get("price")));
-            b.setBookID((Integer) recMap.get("bookID"));
+            b.setBookID(((Long) recMap.get("bookID")).intValue());
         } else {
             return null;
         }
@@ -242,7 +242,7 @@ public class Book implements Transactionable {
                 b.setPublisher((String) recMap.get(key));
             }
             if(key.equals("semester")){
-                b.setSemester((Integer) recMap.get(key));
+                b.setSemester(((Long) recMap.get(key)).intValue());
             }
             if(key.equals("author")){
                 b.setAuthor((String) recMap.get(key));

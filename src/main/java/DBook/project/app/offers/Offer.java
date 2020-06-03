@@ -9,6 +9,7 @@ import org.neo4j.driver.Transaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.neo4j.driver.Values.parameters;
@@ -25,7 +26,7 @@ public class Offer implements Transactionable {
 
     private boolean accepted;
 
-    private Offer(){
+    public Offer(){
 
         this.offerID = idGen.getNextID();
 
@@ -37,7 +38,7 @@ public class Offer implements Transactionable {
 
     }
 
-    public Offer(ArrayList<Book> books, Transaction tx){
+    public Offer(List<Book> books, Transaction tx){
 
         this();
 

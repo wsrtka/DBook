@@ -13,6 +13,7 @@ import org.neo4j.driver.Transaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.neo4j.driver.Values.parameters;
@@ -59,7 +60,7 @@ public class User implements Transactionable {
         return usersOffers;
     }
 
-    public Result addOffer(ArrayList<Book> books, Transaction tx){
+    public Result addOffer(List<Book> books, Transaction tx){
 
         Offer offer = new Offer(books, tx);
         this.usersOffers.put(offer.getOfferID(), offer);
@@ -73,7 +74,7 @@ public class User implements Transactionable {
 
     }
 
-    public Result addInvoice(ArrayList<Book> books, Transaction tx){
+    public Result addInvoice(List<Book> books, Transaction tx){
 
         Invoice invoice = new Invoice(books, tx);
         this.usersInvoices.put(invoice.getInvoiceID(), invoice);
@@ -231,7 +232,11 @@ public class User implements Transactionable {
 
         Record rec;
         while(res.hasNext()){
-//            mapowanie wyniku kwerendy na klasę invoice, sprawdzenie czy juz jest w klasie user i dodanie jesli nie
+            Invoice i;
+            i = new Invoice().mapResult(res.next());
+            if(!this.usersInvoices.containsValue(i)){
+                this.usersInvoices.put(i.getInvoiceID(), i);
+            }
         }
 
     }
@@ -245,7 +250,11 @@ public class User implements Transactionable {
 
         Record rec;
         while(res.hasNext()){
-//            mapowanie wyniku kwerendy na klasę offer, sprawdzenie czy juz jest w klasie user i dodanie jesli nie
+            Offer o;
+            o = new Offer().mapResult(res.next());
+            if(!this.usersOffers.containsValue(o)){
+                this.usersOffers.put(o.getOfferID(), o);
+            }
         }
 
     }

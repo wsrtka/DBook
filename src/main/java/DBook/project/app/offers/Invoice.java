@@ -29,7 +29,7 @@ public class Invoice implements Transactionable {
 
     private boolean accepted;
 
-    private Invoice(){
+    public Invoice(){
 
         this.invoiceID = idGen.getNextID();
 
@@ -41,7 +41,7 @@ public class Invoice implements Transactionable {
 
     }
 
-    public Invoice(ArrayList<Book> books, Transaction tx){
+    public Invoice(List<Book> books, Transaction tx){
 
         this();
 

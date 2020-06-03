@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class BookTest {
 
-    private Book book = new Book("Tytus, Romek i Atomek",   29.99f);
+    private Book book = new Book("Tytus, Romek i Atomek",   new Double(29.99));
     private DBookApplication dbApp = new DBookApplication();
 
     @Test
@@ -38,7 +38,21 @@ public class BookTest {
     public void dbGetTest(){
 
         try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
-            Result res = s.readTransaction(book::getFromDB);
+            Book b = s.readTransaction(
+                    tx -> {
+                        Result res = this.book.getFromDB(tx);
+                        if(res.hasNext()){
+                            Book nb = this.book.mapResult(res.next());
+                            System.out.println("has next");
+                            return nb;
+                        }
+                        else{
+                            System.out.println("not has next");
+                            return null;
+                        }
+                    }
+            );
+            System.out.println(b);
         }
 
     }

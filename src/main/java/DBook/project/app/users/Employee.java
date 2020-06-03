@@ -9,6 +9,7 @@ import org.neo4j.driver.Result;
 import org.neo4j.driver.Transaction;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import static org.neo4j.driver.Values.ofEntity;
 import static org.neo4j.driver.Values.parameters;
@@ -24,14 +25,10 @@ public class Employee extends User{
 
     }
 
-    public void listSomeoneInvoices(Integer userID, Transaction tx){
+    public ArrayList<Invoice> listSomeoneInvoices(User user, Transaction tx){
 
-        ArrayList<Integer> invoicesIDList = new ArrayList(this.dBookApplication.getUserArrayList().get(userID).getUsersInvoices(tx).entrySet());
-
-        for (Integer invoiceID: invoicesIDList) {
-            System.out.println(invoiceID+";");
-        }
-
+        //ArrayList<Integer> invoicesIDList = new ArrayList(this.dBookApplication.getUserArrayList().get(userID).getUsersInvoices(tx).entrySet());
+        return new ArrayList(user.getUsersInvoices(tx).values());
     }
 
     public void listSomeoneOffers(Integer userID, Transaction tx){
@@ -52,13 +49,12 @@ public class Employee extends User{
 
     }
 
-    public Double calculateInvoice(Integer userID, Transaction tx){
-
-        ArrayList<Integer> invoicesIDList = new ArrayList(this.dBookApplication.getUserArrayList().get(userID).getUsersOffers(tx).entrySet());
+    public Double calculateInvoice(User user, Transaction tx){
+        Collection<Invoice> invoicesList = new ArrayList(user.getUsersInvoices(tx).values());
         Double result = new Double(0.0);
 
-        for (Integer invoiceID: invoicesIDList) {
-            result += this.dBookApplication.getUserArrayList().get(userID).calculateInvoice(invoiceID);
+        for (Invoice invoice: invoicesList) {
+            result += user.calculateInvoice(invoice.getInvoiceID());
         }
 
         return result;

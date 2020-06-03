@@ -115,7 +115,44 @@ public class EmployeeTest {
 
     @Test
     public void calculatingInvoiceTest(){
-
+        Book book1 = new Book("Stokrotka", 10);
+        Book book2 = new Book("Hejhop", 40);
+        Book book3 = new Book("Opa", 15);
+        ArrayList<Book> offerBooks = new ArrayList<>();
+        User user1 = new User("piotr", "zale", "ae@am.pl");
+        User user2 = new User("qwert", "zasd", "ze@vc.pl");
+        offerBooks.add(book1);
+        offerBooks.add(book2);
+        offerBooks.add(book3);
+        dbApp.getUserArrayList().add(user1);
+        dbApp.getUserArrayList().add(user2);
+        //when
+        try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
+            s.writeTransaction(
+                    tx -> {
+                        user1.addOffer(offerBooks, tx);
+                        List<Offer> user1Offers = new ArrayList<>(user1.getUsersOffers(tx).values());
+                        Assertions.assertEquals(1, user1Offers.size());
+                        Offer offer1 = user1Offers.get(0);
+                        employee.acceptOffer(offer1, offerBooks, user1.getUserID(),tx);
+                        ArrayList<Book> user2Invoice = new ArrayList<>();
+                        user2Invoice.add(book1);
+                        user2Invoice.add(book2);
+                        user2Invoice.add(book3);
+                        user2.addInvoice(user2Invoice, tx);
+                        return 0;
+                    }
+            );
+        }
+        //then
+        try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
+            s.writeTransaction(
+                    tx -> {
+                        Assertions.assertEquals(65, employee.calculateInvoice(user2, tx));
+                        return 0;
+                    }
+            );
+        }
     }
 
     @Test
@@ -125,7 +162,47 @@ public class EmployeeTest {
 
     @Test
     public void listSomeoneInvoicesTest(){
-
+        Book book1 = new Book("Stokrotka", 10);
+        Book book2 = new Book("Hejhop", 40);
+        Book book3 = new Book("Opa", 15);
+        ArrayList<Book> offerBooks = new ArrayList<>();
+        User user1 = new User("piotr", "zale", "ae@am.pl");
+        User user2 = new User("qwert", "zasd", "ze@vc.pl");
+        offerBooks.add(book1);
+        offerBooks.add(book2);
+        offerBooks.add(book3);
+        dbApp.getUserArrayList().add(user1);
+        dbApp.getUserArrayList().add(user2);
+        //when
+        try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
+            s.writeTransaction(
+                    tx -> {
+                        user1.addOffer(offerBooks, tx);
+                        List<Offer> user1Offers = new ArrayList<>(user1.getUsersOffers(tx).values());
+                        Assertions.assertEquals(1, user1Offers.size());
+                        Offer offer1 = user1Offers.get(0);
+                        employee.acceptOffer(offer1, offerBooks, user1.getUserID(),tx);
+                        ArrayList<Book> user2Invoice1 = new ArrayList<>();
+                        ArrayList<Book> user2Invoice2 = new ArrayList<>();
+                        user2Invoice1.add(book1);
+                        user2Invoice1.add(book2);
+                        user2Invoice2.add(book3);
+                        user2.addInvoice(user2Invoice1, tx);
+                        user2.addInvoice(user2Invoice2, tx);
+                        return 0;
+                    }
+            );
+        }
+        //then
+        try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
+            s.writeTransaction(
+                    tx -> {
+                        Assertions.assertEquals(65, employee.calculateInvoice(user2, tx));
+                        Assertions.assertEquals(2, employee.listSomeoneInvoices(user2, tx).size());
+                        return 0;
+                    }
+            );
+        }
     }
 
     @Test

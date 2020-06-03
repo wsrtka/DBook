@@ -131,7 +131,7 @@ public class Invoice implements Transactionable {
     }
 
     public Integer getInvoiceID() {
-        return invoiceID;
+        return this.invoiceID;
     }
 
 }

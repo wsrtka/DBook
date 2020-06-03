@@ -57,17 +57,32 @@ public class User implements Transactionable {
         return usersOffers;
     }
 
-    public void addOffer(ArrayList<Book> books){
+    public Result addOffer(ArrayList<Book> books, Transaction tx){
 
         Offer offer = new Offer(books);
         this.usersOffers.put(offer.getOfferID(), offer);
 
+        offer.addToDB(tx);
+
+        String query = "MATCH (u: User {userID: $userID}), (o: Offer {offerID: $offerID}) " +
+                "CREATE (u)-[:HAS_A]->(o)";
+
+        return tx.run(query, parameters("userID", this.userID, "offerID", offer.getOfferID()));
+
     }
 
-    public void addInvoice(ArrayList<Book> books, Transaction txt){
+    public Result addInvoice(ArrayList<Book> books, Transaction tx){
 
-        Invoice invoice = new Invoice(books, txt);
+        Invoice invoice = new Invoice(books, tx);
         this.usersInvoices.put(invoice.getInvoiceID(), invoice);
+
+        invoice.addToDB(tx);
+
+        String query = "MATCH (u: User {userID: $userID}), (i: Invoice {invoiceID: $invoiceID}) " +
+                "CREATE (u)-[:HAS_A]->(i)";
+
+        return tx.run(query, parameters("userID", this.userID, "invoiceID", invoice.getInvoiceID()));
+
 
     }
 

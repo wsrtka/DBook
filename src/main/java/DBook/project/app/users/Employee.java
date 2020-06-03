@@ -12,16 +12,22 @@ import java.util.ArrayList;
 public class Employee extends User{
 
     private DBookApplication dBookApplication;
+
     public Employee(DBookApplication dBookApplication, String name, String surname, String email){
+
         super(name, surname, email);
         this.dBookApplication = dBookApplication;
+
     }
 
-    public void listSomeoneInvoices(Integer userID){//wylistowuje faktury danego uzytkownika
+    public void listSomeoneInvoices(Integer userID){
+
         ArrayList<Integer> invoicesIDList = new ArrayList(this.dBookApplication.getUserArrayList().get(userID).getUsersInvoices().entrySet());
+
         for (Integer invoiceID: invoicesIDList) {
             System.out.println(invoiceID+";");
         }
+
     }
 
     public void listSomeoneOffers(Integer userID){//wylistowuje oferty danego uzytkownika

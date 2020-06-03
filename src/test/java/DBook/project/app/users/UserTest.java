@@ -44,10 +44,19 @@ public class UserTest {
     @Test
     public void dbUpdateTest(){
 
+//        wszystkie pola i tak są ostateczne
+        try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
+            s.writeTransaction(user::update);
+        }
+
     }
 
     @Test
     public void dbRemoveTest(){
+
+        try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
+            s.writeTransaction(user::removeFromDB);
+        }
 
     }
 

@@ -97,41 +97,6 @@ public class User implements Transactionable {
 
     }
 
-    private String addOptionalFilters(String query){
-
-        if(this.name != null){
-            query = query + ", u.name: $name";
-        }
-        if(this.surname != null){
-            query = query + ", u.surname: $surname";
-        }
-        if(this.email != null){
-            query = query + ", u.email: $email";
-        }
-        if(this.userID != null){
-            query = query + ", u.userID: $userID";
-        }
-        return query;
-
-    }
-
-    private String addOptionalAttributes(String query){
-
-        if(this.name != null){
-            query = query + ", u.name = $name";
-        }
-        if(this.surname != null){
-            query = query + ", u.surname = $surname";
-        }
-        if(this.email != null){
-            query = query + ", u.email = $email";
-        }
-        if(this.userID != null){
-            query = query + ", u.userID = $userID";
-        }
-        return query;
-    }
-
     @Override
     public void updateParams(){
 
@@ -176,10 +141,12 @@ public class User implements Transactionable {
 
     @Override
     public Result removeFromDB(Transaction tx) {
+
         String query = "MATCH (u: User {userID: $userID})" +
                 " DELETE u";
 
         return tx.run(query, parameters("userID", this.userID));
+
     }
 
     @Override
@@ -196,13 +163,12 @@ public class User implements Transactionable {
 
     @Override
     public Result update(Transaction tx) {
+
         String query = "MATCH (u: User {userID: $userID})" +
                 " SET u.name = $name" +
                 ", u.surname = $surname" +
                 ", u.email = $email" +
                 ", u.userID = $userID";
-
-        query = this.addOptionalAttributes(query);
 
         this.updateParams();
 

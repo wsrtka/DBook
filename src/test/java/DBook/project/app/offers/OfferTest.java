@@ -21,9 +21,9 @@ public class OfferTest {
 
         this.books.addAll(
                 Arrays.asList(
-                        new Book("Proces", 45.95),
-                        new Book("Perfume", 15.99),
-                        new Book("Matematyka nie jest trudna", 34.95)
+                        new Book("Proces", 46),
+                        new Book("Perfume", 16),
+                        new Book("Matematyka nie jest trudna", 35)
                 )
         );
 
@@ -71,7 +71,7 @@ public class OfferTest {
         try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
             s.writeTransaction(
                     tx -> {
-                        this.offer.addBook(new Book("Historia filozofii cz.1", 55.89), tx);
+                        this.offer.addBook(new Book("Historia filozofii cz.1", 56), tx);
                         this.offer.acceptOffer();
                         this.offer.update(tx);
                         return 0;

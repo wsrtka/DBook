@@ -1,3 +1,4 @@
+
 package DBook.project.app.offers;
 
 import DBook.project.app.IdGenerator;
@@ -11,7 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import static org.neo4j.driver.Values.parameters;
 
 public class Offer implements Transactionable {
@@ -91,7 +91,7 @@ public class Offer implements Transactionable {
         return this.books;
     }
 
-    public Double calculateOfferRevenue(){
+    public Integer calculateOfferRevenue(){
 
         Money revenue = new Money();
 

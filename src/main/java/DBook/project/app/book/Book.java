@@ -18,7 +18,7 @@ public class Book implements Transactionable {
     private Integer bookID;
 
     private String title;
-    private Double price;
+    private Integer price;
     private BookType type;
     private String publisher;
     private Integer semester;
@@ -29,7 +29,7 @@ public class Book implements Transactionable {
     private Map<String, Object> params;
 
     // minimal required book info
-    public Book(String title, Double price){
+    public Book(String title, Integer price){
 
         this.title = title;
         this.price = price;
@@ -227,7 +227,7 @@ public class Book implements Transactionable {
         Book b;
 
         if (recMap.containsKey("title") && recMap.containsKey("price") && recMap.containsKey("bookID")) {
-            b = new Book((String) recMap.get("title"), new Double((double) recMap.get("price")));
+            b = new Book((String) recMap.get("title"), new Integer((int) recMap.get("price")));
             b.setBookID(((Long) recMap.get("bookID")).intValue());
         } else {
             return null;
@@ -285,7 +285,7 @@ public class Book implements Transactionable {
         this.title = title;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
@@ -301,7 +301,7 @@ public class Book implements Transactionable {
         return bookID;
     }
 
-    public Double getPrice() {
+    public Integer getPrice() {
         return price;
     }
 

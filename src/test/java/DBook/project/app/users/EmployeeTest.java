@@ -88,7 +88,7 @@ public class EmployeeTest {
                         List<Offer> user1Offers = new ArrayList<>(user1.getUsersOffers(tx).values());
                         Assertions.assertEquals(1, user1Offers.size());
                         Offer offer1 = user1Offers.get(0);
-                        employee.acceptOffer(offer1, offerBooks, user1.getUserID(),tx);
+                        employee.acceptOffer(offer1, offerBooks,tx);
                         ArrayList<Book> user2Invoice = new ArrayList<>();
                         user2Invoice.add(book);
                         user2.addInvoice(user2Invoice, tx);
@@ -104,7 +104,7 @@ public class EmployeeTest {
                         ArrayList<Book> acceptedBooks = new ArrayList<>();
                         acceptedBooks.add(book);
                         Invoice invoice = user2Invoices.get(0);
-                        employee.acceptInvoice(invoice, acceptedBooks, user2.getUserID(), tx);
+                        employee.acceptInvoice(invoice, acceptedBooks, tx);
                         Assertions.assertEquals(BookState.CLAIMED, book.getState());
                         Assertions.assertTrue(invoice.isAccepted());
                         return 0;
@@ -134,12 +134,14 @@ public class EmployeeTest {
                         List<Offer> user1Offers = new ArrayList<>(user1.getUsersOffers(tx).values());
                         Assertions.assertEquals(1, user1Offers.size());
                         Offer offer1 = user1Offers.get(0);
-                        employee.acceptOffer(offer1, offerBooks, user1.getUserID(),tx);
+                        employee.acceptOffer(offer1, offerBooks,tx);
                         ArrayList<Book> user2Invoice = new ArrayList<>();
                         user2Invoice.add(book1);
                         user2Invoice.add(book2);
                         user2Invoice.add(book3);
                         user2.addInvoice(user2Invoice, tx);
+                        ArrayList<Invoice> user2FinalInvoices =  new ArrayList<>(user2.getUsersInvoices(tx).values());
+                        employee.acceptInvoice(user2FinalInvoices.get(0), user2Invoice, tx);
                         return 0;
                     }
             );
@@ -157,6 +159,57 @@ public class EmployeeTest {
 
     @Test
     public void calculatingOfferAndListingBooksToReturnTest(){
+        Book book1 = new Book("Stokrotka", 10);
+        Book book2 = new Book("Hejhop", 40);
+        Book book3 = new Book("Opa", 15);
+        ArrayList<Book> offerBooks = new ArrayList<>();
+        User user1 = new User("piotr", "zale", "ae@am.pl");
+        User user2 = new User("qwert", "zasd", "ze@vc.pl");
+        offerBooks.add(book1);
+        offerBooks.add(book2);
+        offerBooks.add(book3);
+        dbApp.getUserArrayList().add(user1);
+        dbApp.getUserArrayList().add(user2);
+        //when
+        try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
+            s.writeTransaction(
+                    tx -> {
+                        user1.addOffer(offerBooks, tx);
+                        List<Offer> user1Offers = new ArrayList<>(user1.getUsersOffers(tx).values());
+                        Assertions.assertEquals(1, user1Offers.size());
+                        Offer offer1 = user1Offers.get(0);
+                        employee.acceptOffer(offer1, offerBooks,tx);
+                        ArrayList<Book> user2Invoice = new ArrayList<>();
+                        user2Invoice.add(book1);
+                        user2Invoice.add(book2);
+                        user2.addInvoice(user2Invoice, tx);
+                        Assertions.assertEquals(50, employee.calculateInvoice(user2, tx));
+                        ArrayList<Invoice> user2FinalInvoices =  new ArrayList<>(user2.getUsersInvoices(tx).values());
+                        employee.acceptInvoice(user2FinalInvoices.get(0), user2Invoice, tx);
+                        return 0;
+                    }
+            );
+        }
+        // then
+        try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
+            s.writeTransaction(
+                    tx -> {
+                        Assertions.assertEquals(50 ,employee.calculateOffer(user1, tx));
+                        Assertions.assertEquals(1, employee.listBooksToReturn(user1, tx).size());
+                        Assertions.assertTrue(employee.listBooksToReturn(user1, tx).contains(book3));
+                        return 0;
+                    }
+            );
+        }
+    }
+
+    @Test
+    public void listInvoiceBookTest(){
+
+    }
+
+    @Test
+    public void listOfferBookTest(){
 
     }
 
@@ -181,7 +234,7 @@ public class EmployeeTest {
                         List<Offer> user1Offers = new ArrayList<>(user1.getUsersOffers(tx).values());
                         Assertions.assertEquals(1, user1Offers.size());
                         Offer offer1 = user1Offers.get(0);
-                        employee.acceptOffer(offer1, offerBooks, user1.getUserID(),tx);
+                        employee.acceptOffer(offer1, offerBooks,tx);
                         ArrayList<Book> user2Invoice1 = new ArrayList<>();
                         ArrayList<Book> user2Invoice2 = new ArrayList<>();
                         user2Invoice1.add(book1);
@@ -236,9 +289,8 @@ public class EmployeeTest {
                         Offer offer1 = user1Offers.get(0);
                         Offer offer2 = user2Offers.get(0);
                         Assertions.assertEquals(1, offer1.getBooks().size());
-                        Assertions.assertEquals(0, offer1.getOfferID());
-                        employee.acceptOffer(offer1, offer1Books, user1.getUserID(),tx);
-                        employee.acceptOffer(offer2, offer2AcceptedBooks, user2.getUserID(),tx);
+                        employee.acceptOffer(offer1, offer1Books, tx);
+                        employee.acceptOffer(offer2, offer2AcceptedBooks, tx);
                         return 0;
                     }
             );

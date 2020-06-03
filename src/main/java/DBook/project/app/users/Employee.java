@@ -61,22 +61,18 @@ public class Employee extends User{
 
     }
 
-    public Integer calculateOffer(Integer userID, Transaction tx){
+    public Integer calculateOffer(User user, Transaction tx){
 
-        User user = dBookApplication.getUserArrayList().get(userID);
         Money money = new Money();
-
         user.getUsersOffers(tx).forEach((k, v) ->money.add(v.calculateOfferRevenue()));
 
         return money.getValue();
 
     }
 
-    public ArrayList<Book> listBooksToReturn(Integer userID, Transaction tx){
+    public ArrayList<Book> listBooksToReturn(User user, Transaction tx){
 
         ArrayList<Book> booksToReturn = new ArrayList<>();
-        User user = dBookApplication.getUserArrayList().get(userID);
-
         user.getUsersOffers(tx).forEach((k, v) -> booksToReturn.addAll(v.getUnsoldBooks()));
 
         return booksToReturn;
@@ -104,7 +100,7 @@ public class Employee extends User{
 
     }
 
-    public void acceptInvoice(Invoice invoice, ArrayList<Book> acceptedBooks, Integer userID, Transaction tx){
+    public void acceptInvoice(Invoice invoice, ArrayList<Book> acceptedBooks,  Transaction tx){
 
             invoice.acceptInvoice();
 
@@ -125,12 +121,11 @@ public class Employee extends User{
             }
     }
 
-    public void acceptOffer(Offer offer, ArrayList<Book> acceptedBooks, Integer userID, Transaction tx){
+    public void acceptOffer(Offer offer, ArrayList<Book> acceptedBooks,  Transaction tx){
 
         offer.acceptOffer();
 
         for(Book book:acceptedBooks){
-            book.claimBook();
             book.update(tx);
         }
         ArrayList<Book> booksToBeDeleted = new ArrayList<>();

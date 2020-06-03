@@ -108,9 +108,8 @@ public class Employee extends User{
 
     }
 
-    public void acceptInvoice(Integer invoiceID, ArrayList<Book> acceptedBooks, Integer userID, Transaction tx){
+    public void acceptInvoice(Invoice invoice, ArrayList<Book> acceptedBooks, Integer userID, Transaction tx){
 
-            Invoice invoice = dBookApplication.getUserArrayList().get(userID).getUsersInvoices(tx).get(invoiceID);
             invoice.acceptInvoice();
 
             for(Book book:acceptedBooks){
@@ -168,14 +167,17 @@ public class Employee extends User{
     }
 
     public void deleteUnacceptedInvoices(Transaction tx){
-        for(User user : dBookApplication.getUserArrayList()){
+        for(User user : this.dBookApplication.getUserArrayList()){
+            ArrayList<Invoice> invoicesToBeDeleted = new ArrayList<>();
             user.getUsersInvoices(tx).forEach((k, v)->{
                 if(!v.isAccepted()){
                     v.removeFromDB(tx);
-//                    uwaga: może nie działać
-                    user.getUsersInvoices(tx).remove(v);
+                    invoicesToBeDeleted.add(v);
                 }
             });
+            for(Invoice invoice: invoicesToBeDeleted){
+                user.getUsersOffers(tx).values().remove(invoice);
+            }
         }
     }
 

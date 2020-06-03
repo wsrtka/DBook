@@ -2,6 +2,8 @@ package DBook.project.app.users;
 
 import DBook.project.app.DBookApplication;
 import DBook.project.app.book.Book;
+import DBook.project.app.book.BookState;
+import DBook.project.app.offers.Invoice;
 import DBook.project.app.offers.Offer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -69,13 +71,46 @@ public class EmployeeTest {
     }
 
     @Test
-    public void deleteUnacceptedInvoiceTest(){
-
-    }
-
-    @Test
     public void acceptInvoiceTest(){
+        //given
+        Book book = new Book("Stokrotka", 10);
+        ArrayList<Book> offerBooks = new ArrayList<>();
+        User user1 = new User("piotr", "zale", "ae@am.pl");
+        User user2 = new User("qwert", "zasd", "ze@vc.pl");
+        offerBooks.add(book);
 
+        //when
+
+        try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
+            s.writeTransaction(
+                    tx -> {
+                        user1.addOffer(offerBooks, tx);
+                        List<Offer> user1Offers = new ArrayList<>(user1.getUsersOffers(tx).values());
+                        Assertions.assertEquals(1, user1Offers.size());
+                        Offer offer1 = user1Offers.get(0);
+                        employee.acceptOffer(offer1, offerBooks, user1.getUserID(),tx);
+                        ArrayList<Book> user2Invoice = new ArrayList<>();
+                        user2Invoice.add(book);
+                        user2.addInvoice(user2Invoice, tx);
+                        return 0;
+                    }
+            );
+        }
+        //then
+        try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
+            s.writeTransaction(
+                    tx -> {
+                        ArrayList<Invoice> user2Invoices = new ArrayList<>(user2.getUsersInvoices(tx).values());
+                        ArrayList<Book> acceptedBooks = new ArrayList<>();
+                        acceptedBooks.add(book);
+                        Invoice invoice = user2Invoices.get(0);
+                        employee.acceptInvoice(invoice, acceptedBooks, user2.getUserID(), tx);
+                        Assertions.assertEquals(BookState.CLAIMED, book.getState());
+                        Assertions.assertTrue(invoice.isAccepted());
+                        return 0;
+                    }
+            );
+        }
     }
 
     @Test

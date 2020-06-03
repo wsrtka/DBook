@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.neo4j.driver.Values.parameters;
+
 public class Offer implements Transactionable {
 
     private Integer offerID;
@@ -22,15 +24,12 @@ public class Offer implements Transactionable {
 
     private boolean accepted;
 
-    public Offer(ArrayList<Book> books){
+    private Offer(){
 
         this.offerID = idGen.getNextID();
 
         this.books = new HashMap<>();
 
-        for(Book book : books){
-            this.books.put(book.getBookID(), book);
-        }
         this.accepted = false;
 
         this.params = new HashMap<>();
@@ -38,17 +37,49 @@ public class Offer implements Transactionable {
         this.params.put("accepted", this.accepted);
 
     }
+
+    public Offer(ArrayList<Book> books, Transaction tx){
+
+        for(Book book : books){
+            this.addBook(book, tx);
+        }
+
+    }
+
+    public Result addBook(Book b, Transaction tx) {
+
+        this.books.put(b.getBookID(), b);
+
+        Result res = b.getFromDB(tx);
+
+        if (!res.hasNext()) {
+            b.addToDB(tx);
+        }
+
+        String query = "MATCH (o: Offer {offerID: $offerID}), " +
+                "(b: Book {bookID: $bookID}) " +
+                "CREATE (o)-[:HAS_A]->(b)";
+
+        return tx.run(query, parameters("invoiceID", this.offerID, "bookID", b.getBookID()));
+
+    }
+
     public HashMap<Integer, Book> getBooks(){
         return this.books;
     }
+
     public ArrayList<Book> getUnsoldBooks(){
+
         ArrayList<Book> unsoldBooks = new ArrayList<>();
+
         this.books.forEach((k, v) ->{
             if(!v.isSold()){
                 unsoldBooks.add(v);
             }
         });
+
         return unsoldBooks;
+
     }
 
     public HashMap<Integer, Book> getOfferBooks(){
@@ -56,13 +87,17 @@ public class Offer implements Transactionable {
     }
 
     public Double calculateOfferRevenue(){
+
         Money revenue = new Money();
+
         this.books.forEach((k, v) ->{
             if(v.isSold()){
                 revenue.add(v.getPrice());
             }
         });
-        return null;
+
+        return revenue.getValue();
+
     }
 
     public void acceptOffer(){
@@ -86,7 +121,7 @@ public class Offer implements Transactionable {
     public Result removeFromDB(Transaction tx) {
 
         String query = "MATCH (o: Offer {offerID: $offerID}) " +
-                "DELETE o";
+                "DETACH DELETE o";
 
         return tx.run(query, this.params);
 
@@ -104,10 +139,14 @@ public class Offer implements Transactionable {
 
     @Override
     public Result update(Transaction tx) {
+
         String query = "MATCH (o: Offer {offerID: $offerID})" +
                 " SET o.accepted = $accepted";
+
         this.updateParams();
+
         return tx.run(query, this.params);
+
     }
 
     @Override

@@ -112,7 +112,7 @@ public class User implements Transactionable {
 
     }
 
-    public Double calculateInvoice(Integer invoiceID){
+    public Integer calculateInvoice(Integer invoiceID){
 
         return this.usersInvoices.get(invoiceID).calculateInvoice();
 

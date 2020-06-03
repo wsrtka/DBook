@@ -72,7 +72,7 @@ public class DBookApplication {
 
 		//testowanie Book
 		try(Session s = driver.session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
-			Book b = new Book("Tytus, Romek i Atomek", new Double("29.99"));
+			Book b = new Book("Tytus, Romek i Atomek", new Integer("30"));
 			s.writeTransaction(b::addToDB);
 		}
 

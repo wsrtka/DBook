@@ -54,7 +54,7 @@ public class Invoice implements Transactionable {
 
     }
 
-    public Double calculateInvoice(){
+    public Integer calculateInvoice(){
         Money result = new Money();
         this.books.forEach((k, v) ->result.add(v.getPrice()));
 

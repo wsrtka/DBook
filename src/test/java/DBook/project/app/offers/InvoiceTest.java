@@ -22,9 +22,9 @@ public class InvoiceTest {
 
         this.books.addAll(
                 Arrays.asList(
-                        new Book("Proces", 45.95),
-                        new Book("Perfume", 15.99),
-                        new Book("Matematyka nie jest trudna", 34.95)
+                        new Book("Proces", 46),
+                        new Book("Perfume", 16),
+                        new Book("Matematyka nie jest trudna", 35)
                 )
         );
 
@@ -40,26 +40,14 @@ public class InvoiceTest {
     }
     @Test
     public void invoiceValueTest(){
-        //given
-        this.books.addAll(
-                Arrays.asList(
-                        new Book("Proces", 45.95),
-                        new Book("Perfume", 15.99),
-                        new Book("Matematyka nie jest trudna", 34.95)
-                )
-        );
-        //when
+
         try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
-            s.writeTransaction(
-                    tx -> {
-                        this.invoice = new Invoice(this.books, tx);
-                        return 0;
-                    }
-            );
+            s.writeTransaction(invoice::addToDB);
         }
 
         //then
-        Assertions.assertEquals(98.89, this.invoice.calculateInvoice());
+        //Assertions.assertEquals(3, this.invoice.getInvoiceBooks().values().size());
+        Assertions.assertEquals(97, this.invoice.calculateInvoice());
     }
     @Test
     public void dbAddTest(){
@@ -94,7 +82,7 @@ public class InvoiceTest {
         try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
             s.writeTransaction(
                     tx -> {
-                        this.invoice.addBook(new Book("Historia filozofii cz.1", 55.89), tx);
+                        this.invoice.addBook(new Book("Historia filozofii cz.1", 56), tx);
                         this.invoice.acceptInvoice();
                         this.invoice.update(tx);
                         return 0;

@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class BookTest {
 
-    private Book book = new Book("Tytus, Romek i Atomek",   new Double(29.99));
+    private Book book = new Book("Tytus, Romek i Atomek",   new Integer(30));
     private DBookApplication dbApp = new DBookApplication();
 
     @Test

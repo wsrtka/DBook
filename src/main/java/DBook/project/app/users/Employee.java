@@ -64,7 +64,7 @@ public class Employee extends User{
 
     }
 
-    public Double calculateOffer(Integer userID, Transaction tx){
+    public Integer calculateOffer(Integer userID, Transaction tx){
 
         User user = dBookApplication.getUserArrayList().get(userID);
         Money money = new Money();

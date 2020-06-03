@@ -1,17 +1,17 @@
 package DBook.project.app.offers;
 
 public class Money {
-    private Double value;
+    private Integer value;
 
     public Money(){
-        this.value = new Double(0.0);
+        this.value = 0;
     }
 
-    public void add(Double subvalue){
+    public void add(Integer subvalue){
         this.value = this.value + subvalue;
     }
 
-    public Double getValue(){
+    public Integer getValue(){
         return this.value;
     }
 }

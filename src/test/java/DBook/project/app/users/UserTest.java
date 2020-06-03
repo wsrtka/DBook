@@ -69,7 +69,7 @@ public class UserTest {
         try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
 
             s.writeTransaction(
-                    tx -> user.addInvoice(Arrays.asList(new Book("Kaszuby", 19.00), new Book("Mazury", 20.00)),tx)
+                    tx -> user.addInvoice(Arrays.asList(new Book("Kaszuby", 19), new Book("Mazury", 20)),tx)
             );
             s.readTransaction(user::getUsersInvoices);
         }
@@ -81,7 +81,7 @@ public class UserTest {
 
         try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
             s.writeTransaction(
-                    tx -> user.addOffer(Arrays.asList(new Book("Kaszuby", 19.00), new Book("Mazury", 20.00)),tx)
+                    tx -> user.addOffer(Arrays.asList(new Book("Kaszuby", 19), new Book("Mazury", 20)),tx)
             );
             s.readTransaction(user::getUsersInvoices);
         }

@@ -18,7 +18,7 @@ public class Offer implements Transactionable {
 
     private Integer offerID;
 
-    private static final IdGenerator idGen = new IdGenerator();
+    private static IdGenerator idGen;
 
     private HashMap<Integer, Book> books;
 
@@ -28,6 +28,9 @@ public class Offer implements Transactionable {
 
     public Offer(){
 
+        if(idGen == null){
+            idGen = new IdGenerator();
+        }
         this.offerID = idGen.getNextID();
 
         this.accepted = false;
@@ -36,6 +39,11 @@ public class Offer implements Transactionable {
         this.params.put("offerID", this.offerID);
         this.params.put("accepted", this.accepted);
 
+    }
+
+    @Override
+    public void setupIdGenerator(Transaction tx){
+        idGen = new IdGenerator("Offer", tx);
     }
 
     public Offer(List<Book> books, Transaction tx){

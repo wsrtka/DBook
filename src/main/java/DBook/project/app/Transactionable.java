@@ -17,4 +17,6 @@ public interface Transactionable {
 
     void updateParams();
 
+    void setupIdGenerator(Transaction tx);
+
 }

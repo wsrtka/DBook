@@ -10,6 +10,7 @@ import DBook.project.app.offers.Offer;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Transaction;
+import org.neo4j.driver.util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public class User implements Transactionable {
 
     private Integer userID;
 
-    private static IdGenerator idGenerator = new IdGenerator();
+    private static IdGenerator idGenerator;
 
     private HashMap<Integer, Offer> usersOffers;
     private HashMap<Integer, Invoice> usersInvoices;
@@ -34,6 +35,9 @@ public class User implements Transactionable {
 
     public User(String name, String surname, String email){
 
+        if(idGenerator == null){
+            idGenerator = new IdGenerator();
+        }
         this.userID = idGenerator.getNextID();
 
         this.usersOffers = new HashMap<>();
@@ -48,6 +52,11 @@ public class User implements Transactionable {
         this.params.put("email", this.email);
         this.params.put("userID", this.userID);
 
+    }
+
+    @Override
+    public void setupIdGenerator(Transaction tx){
+        idGenerator = new IdGenerator("Client", tx);
     }
 
     public HashMap<Integer, Invoice> getUsersInvoices(Transaction tx) {

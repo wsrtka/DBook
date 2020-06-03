@@ -13,7 +13,7 @@ import static org.neo4j.driver.Values.parameters;
 
 public class Book implements Transactionable {
 
-    private static final IdGenerator idGen = new IdGenerator();
+    private static IdGenerator idGen;
 
     private Integer bookID;
 
@@ -35,6 +35,9 @@ public class Book implements Transactionable {
         this.price = price;
         this.state = BookState.AVAILABLE;
 
+        if(idGen == null){
+            idGen = new IdGenerator();
+        }
         this.bookID = idGen.getNextID();
 
         this.params = new HashMap<>();
@@ -43,6 +46,11 @@ public class Book implements Transactionable {
         this.params.put("price", this.price);
         this.params.put("bookID", this.bookID);
 
+    }
+
+    @Override
+    public void setupIdGenerator(Transaction tx){
+        idGen = new IdGenerator("User", tx);
     }
 
     public void disclaimBook(){

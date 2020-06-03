@@ -21,7 +21,7 @@ public class Invoice implements Transactionable {
 
     private Integer invoiceID;
 
-    private static final IdGenerator idGen = new IdGenerator();
+    private static IdGenerator idGen;
 
     private HashMap<Integer, Book> books;
 
@@ -31,6 +31,9 @@ public class Invoice implements Transactionable {
 
     public Invoice(){
 
+        if(idGen == null){
+            idGen = new IdGenerator();
+        }
         this.invoiceID = idGen.getNextID();
 
         this.accepted = false;
@@ -39,6 +42,11 @@ public class Invoice implements Transactionable {
         this.params.put("invoiceID", this.invoiceID);
         this.params.put("accepted", this.accepted);
 
+    }
+
+    @Override
+    public void setupIdGenerator(Transaction tx){
+        idGen = new IdGenerator("Invoice", tx);
     }
 
     public Invoice(List<Book> books, Transaction tx){

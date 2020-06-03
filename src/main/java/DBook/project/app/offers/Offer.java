@@ -3,6 +3,7 @@ package DBook.project.app.offers;
 import DBook.project.app.IdGenerator;
 import DBook.project.app.Transactionable;
 import DBook.project.app.book.Book;
+import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Transaction;
 
@@ -161,7 +162,33 @@ public class Offer implements Transactionable {
         }
     }
 
+    public Offer mapResult(Record rec){
+
+        Map<String, Object> recMap = rec.get(0).asMap();
+        Offer o;
+
+        if(recMap.containsKey("offerID")){
+            o = new Offer();
+            o.setOfferID(((Long) recMap.get("offerID")).intValue());
+        }
+        else{
+            return null;
+        }
+
+        if(recMap.containsKey("accepted") && ((boolean) recMap.get("accepted"))){
+            o.acceptOffer();
+        }
+
+        return o;
+
+    }
+
     public Integer getOfferID() {
         return offerID;
     }
+
+    private void setOfferID(Integer id){
+        this.offerID = id;
+    }
+
 }

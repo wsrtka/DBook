@@ -29,32 +29,49 @@ public class Invoice implements Transactionable {
 
     private boolean accepted;
 
-    public Invoice(ArrayList<Book> books, Transaction tx){
+    private Invoice(){
 
         this.invoiceID = idGen.getNextID();
+
+        this.accepted = false;
+        this.params = new HashMap<>();
+
+        this.params.put("InvoiceID", this.invoiceID);
+        this.params.put("accepted", this.accepted);
+
+    }
+
+    public Invoice(ArrayList<Book> books, Transaction tx){
+
+        this();
+
         this.books = new HashMap<>();
         for(Book book : books){
             this.addBook(book, tx);
         }
-        this.accepted = false;
-        this.params = new HashMap<>();
-        this.params.put("InvoiceID", this.invoiceID);
 
     }
 
     public Double calculateInvoice(){
+
         Money result = new Money();
         this.books.forEach((k, v) ->result.add(v.getPrice()));
+
         return result.getValue();
+
     }
-    public Double calculateInvoice(Transaction txt){
+
+    public Double calculateInvoice(Transaction tx){
+
         Money result = new Money();
-        this.books.forEach((k, v) ->result.add(Double.parseDouble(v.getFromDB(txt).list().get(1).toString())));
+        this.books.forEach((k, v) ->result.add(Double.parseDouble(v.getFromDB(tx).list().get(1).toString())));
+
         return result.getValue();
+
     }
 
     public HashMap<Integer, Book> getInvoiceBooks(){
-        return  this.books;
+        return this.books;
     }
 
     private Result addBook(Book b, Transaction tx) {
@@ -73,6 +90,7 @@ public class Invoice implements Transactionable {
 
         return tx.run(query, parameters("invoiceID", this.invoiceID, "bookID", b.getBookID()));
     }
+
     public void acceptInvoice(){
         this.accepted = true;
     }
@@ -84,7 +102,7 @@ public class Invoice implements Transactionable {
     @Override
     public Result addToDB(Transaction tx) {
 
-        String query = "CREATE (i: Invoice {i.invoiceID: $invoiceID})";
+        String query = "CREATE (i: Invoice {invoiceID: $invoiceID, accepted: $accepted})";
 
         return tx.run(query, this.params);
 
@@ -93,7 +111,7 @@ public class Invoice implements Transactionable {
     @Override
     public Result removeFromDB(Transaction tx) {
 
-        String query = "MATCH (i: Invoice {i.invoiceID: $invoiceID, accepted: $accepted}}) " +
+        String query = "MATCH (i: Invoice {i.invoiceID: $invoiceID}) " +
                 "DELETE i";
 
         return tx.run(query, this.params);
@@ -103,7 +121,7 @@ public class Invoice implements Transactionable {
     @Override
     public Result getFromDB(Transaction tx) {
 
-        String query = "MATCH (i: Invoice {i.invoiceID: $invoiceID}) " +
+        String query = "MATCH (i: Invoice {invoiceID: $invoiceID, accepted: $accepted}) " +
                 "RETURN i";
 
         return tx.run(query, this.params);
@@ -112,14 +130,19 @@ public class Invoice implements Transactionable {
 
     @Override
     public Result update(Transaction tx){
+
         String query = "MATCH (i: Invoice {invoiceID: $invoiceID})" +
                 " SET o.accepted = $accepted";
+
         this.updateParams();
+
         return tx.run(query, this.params);
+
     }
 
     @Override
     public void updateParams() {
+
         if(this.accepted){
             if(this.params.containsKey("accepted") && !this.params.get("accepted").equals(this.accepted)){
                 this.params.replace("accepted", this.accepted);
@@ -128,10 +151,36 @@ public class Invoice implements Transactionable {
                 this.params.put("accepted", this.accepted);
             }
         }
+
     }
 
     public Integer getInvoiceID() {
         return this.invoiceID;
+    }
+
+    public Invoice mapResult(Record rec){
+
+        Map<String, Object> recMap = rec.get(0).asMap();
+        Invoice i;
+
+        if(recMap.containsKey("invoiceID")){
+            i = new Invoice();
+            i.setInvoiceID(((Long) recMap.get("invoiceID")).intValue());
+        }
+        else{
+            return null;
+        }
+
+        if(recMap.containsKey("accepted") && ((boolean) recMap.get("accepted"))){
+            i.acceptInvoice();
+        }
+
+        return i;
+
+    }
+
+    private void setInvoiceID(Integer id){
+        this.invoiceID = id;
     }
 
 }

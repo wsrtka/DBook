@@ -46,7 +46,7 @@ public class InvoiceTest {
         }
 
         //then
-        //Assertions.assertEquals(3, this.invoice.getInvoiceBooks().values().size());
+        Assertions.assertEquals(3, this.invoice.getInvoiceBooks().values().size());
         Assertions.assertEquals(97, this.invoice.calculateInvoice());
     }
     @Test

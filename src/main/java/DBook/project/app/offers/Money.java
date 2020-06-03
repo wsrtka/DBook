@@ -8,7 +8,7 @@ public class Money {
     }
 
     public void add(Double subvalue){
-        this.value += subvalue;
+        this.value = this.value + subvalue;
     }
 
     public Double getValue(){

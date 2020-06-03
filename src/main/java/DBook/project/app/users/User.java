@@ -61,7 +61,7 @@ public class User implements Transactionable {
 
     public Result addOffer(ArrayList<Book> books, Transaction tx){
 
-        Offer offer = new Offer(books);
+        Offer offer = new Offer(books, tx);
         this.usersOffers.put(offer.getOfferID(), offer);
 
         offer.addToDB(tx);

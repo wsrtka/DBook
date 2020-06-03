@@ -119,7 +119,7 @@ public class EmployeeTest {
     }
 
     @Test
-    public void calculatingOfferTest(){
+    public void calculatingOfferAndListingBooksToReturnTest(){
 
     }
 
@@ -130,11 +130,6 @@ public class EmployeeTest {
 
     @Test
     public void listSomeoneOffersTest(){
-
-    }
-
-    @Test
-    public void listBooksToReturnTest(){
 
     }
 

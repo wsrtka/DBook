@@ -258,4 +258,7 @@ public class User implements Transactionable {
         return this.name;
     }
 
+    public Integer getUserID() {
+        return userID;
+    }
 }

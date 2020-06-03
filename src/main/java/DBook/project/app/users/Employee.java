@@ -5,9 +5,12 @@ import DBook.project.app.DBookApplication;
 import DBook.project.app.offers.Invoice;
 import DBook.project.app.offers.Money;
 import DBook.project.app.offers.Offer;
+import org.neo4j.driver.Result;
 import org.neo4j.driver.Transaction;
 
 import java.util.ArrayList;
+
+import static org.neo4j.driver.Values.parameters;
 
 public class Employee extends User{
 
@@ -166,6 +169,18 @@ public class Employee extends User{
                 }
             });
         }
+    }
+
+    @Override
+    public Result addToDB(Transaction tx) {
+
+        super.addToDB(tx);
+
+        String query = "MATCH (u: User {userID: $userID}) " +
+                "SET u :User:Employee";
+
+        return tx.run(query, parameters("userID", super.getUserID()));
+
     }
 
 }

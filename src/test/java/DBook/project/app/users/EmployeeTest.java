@@ -115,6 +115,7 @@ public class EmployeeTest {
 
     @Test
     public void calculatingInvoiceTest(){
+        //given
         Book book1 = new Book("Stokrotka", 10);
         Book book2 = new Book("Hejhop", 40);
         Book book3 = new Book("Opa", 15);
@@ -159,6 +160,7 @@ public class EmployeeTest {
 
     @Test
     public void calculatingOfferAndListingBooksToReturnTest(){
+        // given
         Book book1 = new Book("Stokrotka", 10);
         Book book2 = new Book("Hejhop", 40);
         Book book3 = new Book("Opa", 15);
@@ -210,7 +212,40 @@ public class EmployeeTest {
 
     @Test
     public void listOfferBookTest(){
-
+        // given
+        Book book1 = new Book("Stokrotka", 10);
+        Book book2 = new Book("Hejhop", 40);
+        Book book3 = new Book("Opa", 15);
+        ArrayList<Book> offerBooks = new ArrayList<>();
+        User user1 = new User("piotr", "zale", "ae@am.pl");
+        offerBooks.add(book1);
+        offerBooks.add(book2);
+        offerBooks.add(book3);
+        dbApp.getUserArrayList().add(user1);
+        //when
+        try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
+            s.writeTransaction(
+                    tx -> {
+                        user1.addOffer(offerBooks, tx);
+                        return 0;
+                    }
+            );
+        }
+        // then
+        try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
+            s.writeTransaction(
+                    tx -> {
+                        List<Offer> user1Offers = new ArrayList<>(user1.getUsersOffers(tx).values());
+                        Assertions.assertEquals(1, user1Offers.size());
+                        Offer offer1 = user1Offers.get(0);
+                        Assertions.assertEquals(3, employee.listOfferBooks(offer1.getOfferID(), user1, tx).size());
+                        Assertions.assertTrue(employee.listOfferBooks(offer1.getOfferID(), user1, tx).contains(book1));
+                        Assertions.assertTrue(employee.listOfferBooks(offer1.getOfferID(), user1, tx).contains(book2));
+                        Assertions.assertTrue(employee.listOfferBooks(offer1.getOfferID(), user1, tx).contains(book3));
+                        return 0;
+                    }
+            );
+        }
     }
 
     @Test

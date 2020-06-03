@@ -89,11 +89,11 @@ public class Employee extends User{
 
     }
 
-    public ArrayList<Book> listOrderBooks(Integer orderID, Integer userID, Transaction tx){
+    public ArrayList<Book> listOfferBooks(Integer orderID, User user, Transaction tx){
 
         ArrayList<Book> booksOffer = new ArrayList<>();
 
-        Offer offer = dBookApplication.getUserArrayList().get(userID).getUsersOffers(tx).get(orderID);
+        Offer offer = user.getUsersOffers(tx).get(orderID);
         booksOffer.addAll(offer.getBooks().values());
 
         return booksOffer;

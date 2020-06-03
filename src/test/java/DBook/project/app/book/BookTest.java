@@ -3,9 +3,12 @@ package DBook.project.app.book;
 import DBook.project.app.DBookApplication;
 import org.junit.jupiter.api.Test;
 import org.neo4j.driver.AccessMode;
+import org.neo4j.driver.Record;
+import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.SessionConfig;
 import org.neo4j.driver.summary.ResultSummary;
+import org.neo4j.driver.util.Pair;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,7 +38,7 @@ public class BookTest {
     public void dbGetTest(){
 
         try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
-            s.readTransaction(book::getFromDB);
+            Result res = s.readTransaction(book::getFromDB);
         }
 
     }

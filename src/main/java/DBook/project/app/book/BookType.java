@@ -17,4 +17,17 @@ public enum BookType {
     public String toString(){
         return this.toString;
     }
+
+    public BookType fromString(String s){
+
+        for(BookType t : BookType.values()){
+            if(t.toString().equals(s)){
+                return t;
+            }
+        }
+
+        return null;
+
+    }
+
 }

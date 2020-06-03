@@ -2,6 +2,7 @@ package DBook.project.app.book;
 
 import DBook.project.app.IdGenerator;
 import DBook.project.app.Transactionable;
+import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Transaction;
 
@@ -91,7 +92,7 @@ public class Book implements Transactionable {
     public Result getFromDB(Transaction tx) {
 
         String query = "MATCH (b: Book {price: $price, title: $title";
-//        query = addOptionalAttributes(query);
+        query = addOptionalFilters(query);
         query = query + "}) RETURN b";
 
         updateParams();
@@ -114,71 +115,6 @@ public class Book implements Transactionable {
 
         return tx.run(query, this.params);
 
-    }
-
-    public void setType(BookType type) {
-        this.type = type;
-    }
-
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
-    }
-
-    public void setSemester(int semester) {
-        this.semester = semester;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setPrice(Float price) {
-        this.price = price;
-    }
-
-    public void setState(BookState state) {
-        this.state = state;
-    }
-
-    public void setSemester(Integer semester) {
-        this.semester = semester;
-    }
-
-    private String addOptionalAttributes(String query){
-
-        if(this.type != null){
-            query = query + ", b.type = $type";
-        }
-        if(this.publisher != null){
-            query = query + ", b.publisher = $publisher";
-        }
-        if(this.semester != null){
-            query = query + ", b.semester = $semester";
-        }
-        if(this.author != null){
-            query = query + ", b.author = $author";
-        }
-        if(this.isbn != null){
-            query = query + ", b.isbn = $isbn";
-        }
-        if(this.isbn != null){
-            query = query + ", b.sold = $sold";
-        }
-
-        return query;
-
-    }
-
-    public Integer getBookID() {
-        return bookID;
     }
 
     @Override
@@ -233,6 +169,136 @@ public class Book implements Transactionable {
             }
         }
 
+    }
+
+    private String addOptionalAttributes(String query){
+
+        if(this.type != null){
+            query = query + ", b.type = $type";
+        }
+        if(this.publisher != null){
+            query = query + ", b.publisher = $publisher";
+        }
+        if(this.semester != null){
+            query = query + ", b.semester = $semester";
+        }
+        if(this.author != null){
+            query = query + ", b.author = $author";
+        }
+        if(this.isbn != null){
+            query = query + ", b.isbn = $isbn";
+        }
+        if(this.isbn != null){
+            query = query + ", b.sold = $sold";
+        }
+
+        return query;
+
+    }
+
+    private String addOptionalFilters(String query){
+
+        if(this.type != null){
+            query = query + ", b.type: $type";
+        }
+        if(this.publisher != null){
+            query = query + ", b.publisher: $publisher";
+        }
+        if(this.semester != null){
+            query = query + ", b.semester: $semester";
+        }
+        if(this.author != null){
+            query = query + ", b.author: $author";
+        }
+        if(this.isbn != null){
+            query = query + ", b.isbn: $isbn";
+        }
+        if(this.isbn != null){
+            query = query + ", b.sold: $sold";
+        }
+
+        return query;
+
+    }
+
+    public Book mapResult(Record rec) {
+
+        Map<String, Object> recMap = rec.asMap();
+        Book b;
+
+        if (recMap.containsKey("title") && recMap.containsKey("price") && recMap.containsKey("bookID")) {
+            b = new Book((String) recMap.get("title"), (float) recMap.get("price"));
+            b.setBookID((Integer) recMap.get("bookID"));
+        } else {
+            return null;
+        }
+
+        for (String key : recMap.keySet()) {
+
+            if (key.equals("type")) {
+                b.setType(BookType.COMPENDIUM.fromString((String) recMap.get(key)));
+            }
+            if(key.equals("publisher")){
+                b.setPublisher((String) recMap.get(key));
+            }
+            if(key.equals("semester")){
+                b.setSemester((Integer) recMap.get(key));
+            }
+            if(key.equals("author")){
+                b.setAuthor((String) recMap.get(key));
+            }
+            if(key.equals("isbn")) {
+                b.setIsbn((String) recMap.get(key));
+            }
+
+        }
+
+        return b;
+
+    }
+
+    private void setBookID(Integer id){
+        this.bookID = id;
+    }
+
+    public void setType(BookType type) {
+        this.type = type;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public void setSemester(int semester) {
+        this.semester = semester;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
+    }
+
+    public void setState(BookState state) {
+        this.state = state;
+    }
+
+    public void setSemester(Integer semester) {
+        this.semester = semester;
+    }
+
+    public Integer getBookID() {
+        return bookID;
     }
 
     public Float getPrice() {

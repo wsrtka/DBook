@@ -17,7 +17,7 @@ public class Offer implements Transactionable {
 
     private Integer offerID;
 
-    private static IdGenerator idGen = new IdGenerator();
+    private static final IdGenerator idGen = new IdGenerator();
 
     private HashMap<Integer, Book> books;
 
@@ -29,8 +29,6 @@ public class Offer implements Transactionable {
 
         this.offerID = idGen.getNextID();
 
-        this.books = new HashMap<>();
-
         this.accepted = false;
 
         this.params = new HashMap<>();
@@ -41,6 +39,11 @@ public class Offer implements Transactionable {
 
     public Offer(ArrayList<Book> books, Transaction tx){
 
+        this();
+
+        this.addToDB(tx);
+
+        this.books = new HashMap<>();
         for(Book book : books){
             this.addBook(book, tx);
         }
@@ -61,7 +64,7 @@ public class Offer implements Transactionable {
                 "(b: Book {bookID: $bookID}) " +
                 "CREATE (o)-[:HAS_A]->(b)";
 
-        return tx.run(query, parameters("invoiceID", this.offerID, "bookID", b.getBookID()));
+        return tx.run(query, parameters("offerID", this.offerID, "bookID", b.getBookID()));
 
     }
 

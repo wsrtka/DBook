@@ -3,12 +3,12 @@ package DBook.project.app.offers;
 import DBook.project.app.DBookApplication;
 import DBook.project.app.book.Book;
 import DBook.project.app.users.User;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.neo4j.driver.AccessMode;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.SessionConfig;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -38,7 +38,29 @@ public class InvoiceTest {
         }
 
     }
+    @Test
+    public void invoiceValueTest(){
+        //given
+        this.books.addAll(
+                Arrays.asList(
+                        new Book("Proces", 45.95),
+                        new Book("Perfume", 15.99),
+                        new Book("Matematyka nie jest trudna", 34.95)
+                )
+        );
+        //when
+        try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
+            s.writeTransaction(
+                    tx -> {
+                        this.invoice = new Invoice(this.books, tx);
+                        return 0;
+                    }
+            );
+        }
 
+        //then
+        Assertions.assertEquals(98.89, this.invoice.calculateInvoice());
+    }
     @Test
     public void dbAddTest(){
 

@@ -55,7 +55,6 @@ public class Invoice implements Transactionable {
     }
 
     public Double calculateInvoice(){
-
         Money result = new Money();
         this.books.forEach((k, v) ->result.add(v.getPrice()));
 
@@ -63,14 +62,7 @@ public class Invoice implements Transactionable {
 
     }
 
-    public Double calculateInvoice(Transaction tx){
 
-        Money result = new Money();
-        this.books.forEach((k, v) ->result.add(Double.parseDouble(v.getFromDB(tx).list().get(1).toString())));
-
-        return result.getValue();
-
-    }
 
     public HashMap<Integer, Book> getInvoiceBooks(){
         return this.books;

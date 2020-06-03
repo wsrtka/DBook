@@ -60,5 +60,15 @@ public class UserTest {
 
     }
 
+    @Test
+    public void addInvoiceTest(){
+
+    }
+
+    @Test
+    public void addOfferTest(){
+
+    }
+
 }
 

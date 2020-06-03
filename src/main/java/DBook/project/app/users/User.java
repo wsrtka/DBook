@@ -49,11 +49,13 @@ public class User implements Transactionable {
 
     }
 
-    public HashMap<Integer, Invoice> getUsersInvoices() {
+    public HashMap<Integer, Invoice> getUsersInvoices(Transaction tx) {
+        this.refreshInvoices(tx);
         return usersInvoices;
     }
 
-    public HashMap<Integer, Offer> getUsersOffers() {
+    public HashMap<Integer, Offer> getUsersOffers(Transaction tx) {
+        this.refreshOffers(tx);
         return usersOffers;
     }
 
@@ -86,7 +88,9 @@ public class User implements Transactionable {
 
     }
 
-    public void listMyInvoices(){
+    public void listMyInvoices(Transaction tx){
+
+        this.refreshInvoices(tx);
 
         ArrayList<Integer> invoicesIDList = new ArrayList(usersInvoices.entrySet());
 
@@ -96,7 +100,9 @@ public class User implements Transactionable {
 
     }
 
-    public void listMyOffers(){
+    public void listMyOffers(Transaction tx){
+
+        this.refreshOffers(tx);
 
         ArrayList<Offer> offersIDList = new ArrayList(usersOffers.entrySet());
 
@@ -213,6 +219,34 @@ public class User implements Transactionable {
         }
 
         return u;
+
+    }
+
+    private void refreshInvoices(Transaction tx){
+
+        String query = "MATCH (u: User {userID: $userID})-[:HAS_A]->(i: Invoice) " +
+                "RETURN i";
+
+        Result res = tx.run(query, parameters("userID", this.userID));
+
+        Record rec;
+        while(res.hasNext()){
+//            mapowanie wyniku kwerendy na klasę invoice, sprawdzenie czy juz jest w klasie user i dodanie jesli nie
+        }
+
+    }
+
+    private void refreshOffers(Transaction tx){
+
+        String query = "MATCH (u: User {userID: $userID})-[:HAS_A]->(o: Offer) " +
+                "RETURN o";
+
+        Result res = tx.run(query, parameters("userID", this.userID));
+
+        Record rec;
+        while(res.hasNext()){
+//            mapowanie wyniku kwerendy na klasę offer, sprawdzenie czy juz jest w klasie user i dodanie jesli nie
+        }
 
     }
 

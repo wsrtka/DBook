@@ -129,11 +129,6 @@ public class EmployeeTest {
     }
 
     @Test
-    public void listSomeoneOffersTest(){
-
-    }
-
-    @Test
     public void deleteUnacceptedBooksTest(){
         //given
         Book book1 = new Book("Stokrotka", 10);

@@ -2,7 +2,6 @@ package DBook.project.app.users;
 
 import DBook.project.app.DBookApplication;
 import DBook.project.app.book.Book;
-import DBook.project.app.offers.Offer;
 import org.junit.jupiter.api.Test;
 import org.neo4j.driver.AccessMode;
 import org.neo4j.driver.Result;

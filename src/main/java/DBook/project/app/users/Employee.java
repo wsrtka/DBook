@@ -10,6 +10,7 @@ import org.neo4j.driver.Transaction;
 
 import java.util.ArrayList;
 
+import static org.neo4j.driver.Values.ofEntity;
 import static org.neo4j.driver.Values.parameters;
 
 public class Employee extends User{
@@ -116,33 +117,37 @@ public class Employee extends User{
                 book.claimBook();
                 book.update(tx);
             }
-
+            ArrayList<Book> booksToBeDeleted = new ArrayList<>();
             invoice.getInvoiceBooks().forEach((k, v)->{
                 if(!acceptedBooks.contains(v)){
                     v.disclaimBook();
                     v.update(tx);
+                    booksToBeDeleted.add(v);
                 }
             });
-
+            for(Book book: booksToBeDeleted){
+                invoice.getInvoiceBooks().values().remove(book);
+            }
     }
 
-    public void acceptOffer(Integer offerID, ArrayList<Book> acceptedBooks, Integer userID, Transaction tx){
+    public void acceptOffer(Offer offer, ArrayList<Book> acceptedBooks, Integer userID, Transaction tx){
 
-        Offer offer = dBookApplication.getUserArrayList().get(userID).getUsersOffers(tx).get(offerID);
         offer.acceptOffer();
 
         for(Book book:acceptedBooks){
             book.claimBook();
             book.update(tx);
         }
-
+        ArrayList<Book> booksToBeDeleted = new ArrayList<>();
         offer.getOfferBooks().forEach((k, v)->{
             if(!acceptedBooks.contains(v)){
                 v.removeFromDB(tx);
-//                uwaga: może nie działać poprawnie
-                offer.getBooks().remove(v);
+                booksToBeDeleted.add(v);
             }
         });
+        for(Book book: booksToBeDeleted){
+            offer.getBooks().values().remove(book);
+        }
     }
 
     public void deleteUnacceptedOffers(Transaction tx){

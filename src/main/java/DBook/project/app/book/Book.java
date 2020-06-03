@@ -90,7 +90,7 @@ public class Book implements Transactionable {
     public Result removeFromDB(Transaction tx) {
 
         String query = "MATCH (b: Book {bookID: $bookID})" +
-                " DELETE b";
+                " DETACH DELETE b";
 
         return tx.run(query, parameters("bookID", this.bookID));
 

@@ -32,6 +32,46 @@ public class EmployeeTest {
     }
 
     @Test
+    public void deleteUnacceptedOfferTest(){
+
+    }
+
+    @Test
+    public void deleteUnacceptedInvoiceTest(){
+
+    }
+
+    @Test
+    public void acceptInvoiceTest(){
+
+    }
+
+    @Test
+    public void calculatingInvoiceTest(){
+
+    }
+
+    @Test
+    public void calculatingOfferTest(){
+
+    }
+
+    @Test
+    public void listSomeoneInvoicesTest(){
+
+    }
+
+    @Test
+    public void listSomeoneOffersTest(){
+
+    }
+
+    @Test
+    public void listBooksToReturnTest(){
+
+    }
+
+    @Test
     public void deleteUnacceptedBooksTest(){
         //given
         Book book1 = new Book("Stokrotka", 10);
@@ -65,7 +105,6 @@ public class EmployeeTest {
                         Assertions.assertEquals(0, offer1.getOfferID());
                         employee.acceptOffer(offer1, offer1Books, user1.getUserID(),tx);
                         employee.acceptOffer(offer2, offer2AcceptedBooks, user2.getUserID(),tx);
-                        employee.deleteUnacceptedOffers(tx);
                         return 0;
                     }
             );

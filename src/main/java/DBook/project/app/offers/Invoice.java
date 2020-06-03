@@ -58,6 +58,7 @@ public class Invoice implements Transactionable {
         this.books = new HashMap<>();
         for(Book book : books){
             this.addBook(book, tx);
+            book.reserveBook();
         }
 
     }

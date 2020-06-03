@@ -89,11 +89,11 @@ public class Employee extends User{
 
     }
 
-    public ArrayList<Book> listOfferBooks(Integer orderID, User user, Transaction tx){
+    public ArrayList<Book> listOfferBooks(Integer offerID, User user, Transaction tx){
 
         ArrayList<Book> booksOffer = new ArrayList<>();
 
-        Offer offer = user.getUsersOffers(tx).get(orderID);
+        Offer offer = user.getUsersOffers(tx).get(offerID);
         booksOffer.addAll(offer.getBooks().values());
 
         return booksOffer;
@@ -129,6 +129,7 @@ public class Employee extends User{
             book.update(tx);
         }
         ArrayList<Book> booksToBeDeleted = new ArrayList<>();
+        System.out.println(offer.getBooks().size());
         offer.getOfferBooks().forEach((k, v)->{
             if(!acceptedBooks.contains(v)){
                 v.removeFromDB(tx);

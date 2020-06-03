@@ -235,7 +235,7 @@ public class Book implements Transactionable {
         Book b;
 
         if (recMap.containsKey("title") && recMap.containsKey("price") && recMap.containsKey("bookID")) {
-            b = new Book((String) recMap.get("title"), new Integer((int) recMap.get("price")));
+            b = new Book((String) recMap.get("title"), Math.toIntExact(new Long((long) recMap.get("price"))));
             b.setBookID(((Long) recMap.get("bookID")).intValue());
         } else {
             return null;

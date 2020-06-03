@@ -87,8 +87,6 @@ public class EmployeeTest {
                         user1.addOffer(offerBooks, tx);
                         List<Offer> user1Offers = new ArrayList<>(user1.getUsersOffers(tx).values());
                         Assertions.assertEquals(1, user1Offers.size());
-                        Offer offer1 = user1Offers.get(0);
-                        employee.acceptOffer(offer1, offerBooks,tx);
                         ArrayList<Book> user2Invoice = new ArrayList<>();
                         user2Invoice.add(book);
                         user2.addInvoice(user2Invoice, tx);
@@ -134,8 +132,6 @@ public class EmployeeTest {
                         user1.addOffer(offerBooks, tx);
                         List<Offer> user1Offers = new ArrayList<>(user1.getUsersOffers(tx).values());
                         Assertions.assertEquals(1, user1Offers.size());
-                        Offer offer1 = user1Offers.get(0);
-                        employee.acceptOffer(offer1, offerBooks,tx);
                         ArrayList<Book> user2Invoice = new ArrayList<>();
                         user2Invoice.add(book1);
                         user2Invoice.add(book2);
@@ -179,8 +175,6 @@ public class EmployeeTest {
                         user1.addOffer(offerBooks, tx);
                         List<Offer> user1Offers = new ArrayList<>(user1.getUsersOffers(tx).values());
                         Assertions.assertEquals(1, user1Offers.size());
-                        Offer offer1 = user1Offers.get(0);
-                        employee.acceptOffer(offer1, offerBooks,tx);
                         ArrayList<Book> user2Invoice = new ArrayList<>();
                         user2Invoice.add(book1);
                         user2Invoice.add(book2);
@@ -347,7 +341,7 @@ public class EmployeeTest {
         offer1Books.add(book1);
         offer2Books.add(book2);
         offer2Books.add(book3);
-
+        ArrayList<Offer> offers = new ArrayList<>();
         //when
         ArrayList<Book> offer2AcceptedBooks = new ArrayList<>();
         offer2AcceptedBooks.add(book2);
@@ -355,16 +349,10 @@ public class EmployeeTest {
         try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
             s.writeTransaction(
                     tx -> {
-                        user1.addOffer(offer1Books, tx);
-                        user2.addOffer(offer2Books, tx);
-                        Assertions.assertEquals(1, user1.getUsersOffers(tx).size());
-
-                        List<Offer> user1Offers = new ArrayList<>(user1.getUsersOffers(tx).values());
-                        List<Offer> user2Offers = new ArrayList<>(user2.getUsersOffers(tx).values());
-                        Assertions.assertEquals(1, user1Offers.size());
-                        Offer offer1 = user1Offers.get(0);
-                        Offer offer2 = user2Offers.get(0);
-                        Assertions.assertEquals(1, offer1.getBooks().size());
+                        Offer offer1 = new Offer(offer1Books, tx);
+                        Offer offer2 = new Offer(offer2Books, tx);
+                        offers.add(offer1);
+                        offers.add(offer2);
                         employee.acceptOffer(offer1, offer1Books, tx);
                         employee.acceptOffer(offer2, offer2AcceptedBooks, tx);
                         return 0;
@@ -376,7 +364,7 @@ public class EmployeeTest {
             s.writeTransaction(
                     tx -> {
                         List user2DiffOffers = new ArrayList<>(user2.getUsersOffers(tx).values());
-                        Offer resultOffer = (Offer) user2DiffOffers.get(0);
+                        Offer resultOffer = offers.get(1);
                         Assertions.assertEquals(1, resultOffer.getBooks().size());
                         Assertions.assertTrue(resultOffer.getBooks().containsValue(book2));
                         return 0;

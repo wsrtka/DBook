@@ -2,6 +2,8 @@ package DBook.project.app.offers;
 
 import DBook.project.app.DBookApplication;
 import DBook.project.app.book.Book;
+import DBook.project.app.users.User;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.neo4j.driver.AccessMode;
 import org.neo4j.driver.Result;
@@ -88,6 +90,29 @@ public class OfferTest {
             s.writeTransaction(offer::removeFromDB);
         }
 
+    }
+
+    @Test
+    public void addBookTest(){
+        // given
+        Book book1 = new Book("Stokrotka", 10);
+        Book book2 = new Book("Hejhop", 40);
+        Book book3 = new Book("Opa", 15);
+        ArrayList<Book> offerBooks = new ArrayList<>();
+        offerBooks.add(book1);
+        offerBooks.add(book2);
+        offerBooks.add(book3);
+
+        try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
+            s.writeTransaction(
+                    tx -> {
+                        Offer offer = new Offer(offerBooks,tx);
+
+                        Assertions.assertEquals(3, offer.getBooks().size());
+                        return 0;
+                    }
+            );
+        }
     }
 
 }

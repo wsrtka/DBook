@@ -13,14 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeeTest {
-
-    private Employee employee = new Employee(new DBookApplication(), "Piotr Dariusz", "Świderski", "pds@falelo.pl");
     private DBookApplication dbApp = new DBookApplication();
-    private User user1;
-    private User user2;
-    private Offer offer1;
-    private Offer offer2;
-
+    private Employee employee = new Employee(this.dbApp, "Piotr Dariusz", "Świderski", "pds@falelo.pl");
 
     @Test
     public void addToDBTest(){
@@ -33,7 +27,45 @@ public class EmployeeTest {
 
     @Test
     public void deleteUnacceptedOfferTest(){
+        //given
+        Book book1 = new Book("Stokrotka", 10);
+        Book book2 = new Book("Hejhop", 40);
+        Book book3 = new Book("Opa", 15);
+        ArrayList<Book> offer1Books = new ArrayList<>();
+        ArrayList<Book> offer2Books = new ArrayList<>();
+        User user1 = new User("piotr", "zale", "ae@am.pl");
+        User user2 = new User("qwert", "zasd", "ze@vc.pl");
+        dbApp.getUserArrayList().add(user1);
+        dbApp.getUserArrayList().add(user2);
 
+        offer1Books.add(book1);
+        offer2Books.add(book2);
+        offer2Books.add(book3);
+
+        //when
+        ArrayList<Book> offer2AcceptedBooks = new ArrayList<>();
+        offer2AcceptedBooks.add(book2);
+
+        try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
+            s.writeTransaction(
+                    tx -> {
+                        user1.addOffer(offer1Books, tx);
+                        user2.addOffer(offer2Books, tx);
+                        this.employee.deleteUnacceptedOffers(tx);
+                        return 0;
+                    }
+            );
+        }
+        //then
+        try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
+            s.writeTransaction(
+                    tx -> {
+                        Assertions.assertEquals(0, user2.getUsersOffers(tx).values().size());
+                        Assertions.assertEquals(0, user1.getUsersOffers(tx).values().size());
+                        return 0;
+                    }
+            );
+        }
     }
 
     @Test

@@ -28,7 +28,6 @@ public class DBookApplication {
 		this.userArrayList = new ArrayList<>();
 		driver = this.initializeDriver();
 	}
-
 	private Driver initializeDriver(){
 		JSONParser parser = new JSONParser();
 		JSONObject auth = new JSONObject();

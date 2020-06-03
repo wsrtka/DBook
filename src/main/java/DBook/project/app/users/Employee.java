@@ -152,14 +152,17 @@ public class Employee extends User{
 
     public void deleteUnacceptedOffers(Transaction tx){
 
-        for(User user : dBookApplication.getUserArrayList()){
+        for(User user : this.dBookApplication.getUserArrayList()){
+            ArrayList<Offer> offersToBeDeleted = new ArrayList<>();
             user.getUsersOffers(tx).forEach((k, v)->{
-                if(v.isAccepted()){
+                if(!v.isAccepted()){
                     v.removeFromDB(tx);
-//                    uwaga: może nie działać
-                    user.getUsersOffers(tx).remove(v);
+                    offersToBeDeleted.add(v);
                 }
             });
+            for(Offer offer: offersToBeDeleted){
+                user.getUsersOffers(tx).values().remove(offer);
+            }
         }
 
     }
@@ -167,7 +170,7 @@ public class Employee extends User{
     public void deleteUnacceptedInvoices(Transaction tx){
         for(User user : dBookApplication.getUserArrayList()){
             user.getUsersInvoices(tx).forEach((k, v)->{
-                if(v.isAccepted()){
+                if(!v.isAccepted()){
                     v.removeFromDB(tx);
 //                    uwaga: może nie działać
                     user.getUsersInvoices(tx).remove(v);

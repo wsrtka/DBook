@@ -78,10 +78,10 @@ public class Employee extends User{
         return booksToReturn;
     }
 
-    public ArrayList<Book> listInvoiceBooks(Integer invoiceID, Integer userID, Transaction tx){
+    public ArrayList<Book> listInvoiceBooks(Integer invoiceID, User user, Transaction tx){
 
         ArrayList<Book> booksToBeBrought = new ArrayList<>();
-        Invoice invoice = dBookApplication.getUserArrayList().get(userID).getUsersInvoices(tx).get(invoiceID);
+        Invoice invoice = user.getUsersInvoices(tx).get(invoiceID);
 
         booksToBeBrought.addAll(invoice.getInvoiceBooks().values());
 

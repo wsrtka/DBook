@@ -17,17 +17,22 @@ import java.util.Map;
 import static org.neo4j.driver.Values.parameters;
 
 public class User implements Transactionable {
+
     private Integer userID;
+
     private static IdGenerator idGenerator = new IdGenerator();
+
     private HashMap<Integer, Offer> usersOffers;
     private HashMap<Integer, Invoice> usersInvoices;
     private String name;
     private String surname;
     private String email;
+
     private Map<String, Object> params;
 
     public User(String name, String surname, String email){
-        this.userID = this.idGenerator.getNextID();
+
+        this.userID = idGenerator.getNextID();
 
         this.usersOffers = new HashMap<>();
         this.usersInvoices = new HashMap<>();
@@ -40,6 +45,7 @@ public class User implements Transactionable {
         this.params.put("surname", this.surname);
         this.params.put("email", this.email);
         this.params.put("userID", this.userID);
+
     }
 
     public HashMap<Integer, Invoice> getUsersInvoices() {
@@ -51,74 +57,62 @@ public class User implements Transactionable {
     }
 
     public void addOffer(ArrayList<Book> books){
-        Integer offerID = this.idGenerator.getNextID();
+
         Offer offer = new Offer(books);
-        this.usersOffers.put(offerID, offer);
+        this.usersOffers.put(offer.getOfferID(), offer);
+
     }
 
-    public void addInvoice(ArrayList<Book> books, Transaction txt){ // musimy ustalić jak mamy dodać książki (obiekty typu Book)
-        Integer invoiceID = this.idGenerator.getNextID();
+    public void addInvoice(ArrayList<Book> books, Transaction txt){
+
         Invoice invoice = new Invoice(books, txt);
-        this.usersInvoices.put(invoiceID, invoice);
+        this.usersInvoices.put(invoice.getInvoiceID(), invoice);
+
     }
 
     public void listMyInvoices(){
+
         ArrayList<Integer> invoicesIDList = new ArrayList(usersInvoices.entrySet());
+
         for (Integer invoiceID: invoicesIDList) {
             System.out.println(invoiceID+";");
         }
+
     }
 
     public void listMyOffers(){
+
         ArrayList<Offer> offersIDList = new ArrayList(usersOffers.entrySet());
+
         for(Offer offerID : offersIDList){
             System.out.println(offerID + ";");
         }
+
     }
 
-    public Double calculateInvoice(Integer invoiceID, Transaction txt){ // pytanie, czy tu nie robimy opcji tylko dla swoich zamowien/offert (bo pracownik potrzebuje miec dostep do wszystkich)
+    public Double calculateInvoice(Integer invoiceID, Transaction txt){
+
         return this.usersInvoices.get(invoiceID).calculateInvoice(txt);
+
     }
 
-    private String title;
-    private Float price;
-    private BookType type;
-    private String publisher;
-    private Integer semester;
-    private String author;
-    private String isbn;
-    private BookState state;
+    private String addOptionalFilters(String query){
 
-    public Result listBooks(String title, BookType type, String publisher, Integer semester, String author, Transaction tx){
-        Map<String,Object> params = new HashMap<>();
-        params.put("title", title);
-        params.put("type", type);
-        params.put("publisher", publisher);
-        params.put("semester", semester);
-        params.put("author", author);
+        if(this.name != null){
+            query = query + ", u.name: $name";
+        }
+        if(this.surname != null){
+            query = query + ", u.surname: $surname";
+        }
+        if(this.email != null){
+            query = query + ", u.email: $email";
+        }
+        if(this.userID != null){
+            query = query + ", u.userID: $userID";
+        }
+        return query;
 
-        String query = "MATCH (b: Book {price: $price, title: $title";
-        if(title != null){
-            query = query + "title: $title, ";
-        }
-        if(type != null){
-            query = query + "type: $type, ";
-        }
-        if(publisher != null){
-            query = query + "publisher: $publisher, ";
-        }
-        if(semester != null){
-            query = query + "semester: $semester, ";
-        }
-        if(author != null){
-            query = query + "author: $author, ";
-        }
-        query = query + "accepted: true, state: Available";
-        query = query + "}) RETURN b";
-
-        return tx.run(query, this.params);
     }
-
 
     private String addOptionalAttributes(String query){
 
@@ -168,16 +162,15 @@ public class User implements Transactionable {
 
     @Override
     public Result addToDB(Transaction tx) {
-        String query = "CREATE (u: User)" +
-                " SET c.name = $title" +
-                ",  c.surname = $surname" +
-                ",  c.email = $email" +
-                ",  c.userID = $userID";
 
-        query = this.addOptionalAttributes(query);
-        this.updateParams();
+        String query = "CREATE (u: User)" +
+                " SET u.name = $name" +
+                ",  u.surname = $surname" +
+                ",  u.email = $email" +
+                ",  u.userID = $userID";
 
         return tx.run(query, this.params);
+
     }
 
     @Override

@@ -121,4 +121,8 @@ public class Offer implements Transactionable {
             }
         }
     }
+
+    public Integer getOfferID() {
+        return offerID;
+    }
 }

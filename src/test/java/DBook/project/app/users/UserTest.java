@@ -27,7 +27,16 @@ public class UserTest {
     public void dbGetTest(){
 
         try(Session s = dbApp.getDriver().session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
-
+            User u = s.readTransaction(tx -> {
+                Result res = this.user.getFromDB(tx);
+                if(res.hasNext()){
+                    return this.user.mapResult(res.next());
+                }
+                else{
+                    return null;
+                }
+            });
+            System.out.println(u.getName());
         }
 
     }

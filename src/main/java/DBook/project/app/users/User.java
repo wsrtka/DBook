@@ -7,6 +7,7 @@ import DBook.project.app.book.BookType;
 import DBook.project.app.IdGenerator;
 import DBook.project.app.offers.Invoice;
 import DBook.project.app.offers.Offer;
+import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Transaction;
 
@@ -183,13 +184,14 @@ public class User implements Transactionable {
 
     @Override
     public Result getFromDB(Transaction tx) {
+
         String query = "MATCH (u: User {name: $name, surname: $surname, email: $email";
-        query = addOptionalAttributes(query);
         query = query + "}) RETURN u";
 
         updateParams();
 
         return tx.run(query, this.params);
+
     }
 
     @Override
@@ -206,4 +208,39 @@ public class User implements Transactionable {
 
         return tx.run(query, this.params);
     }
+
+    public User mapResult(Record rec){
+
+        Map<String, Object> recMap = rec.get(0).asMap();
+        User u;
+
+        if(
+                recMap.containsKey("name")
+                && recMap.containsKey("surname")
+                && recMap.containsKey("email")
+                && recMap.containsKey("userID")
+        ){
+            u = new User(
+                    (String) recMap.get("name"),
+                    (String) recMap.get("surname"),
+                    (String) recMap.get("email")
+            );
+            u.setUserID(((Long) recMap.get("userID")).intValue());
+        }
+        else{
+            return null;
+        }
+
+        return u;
+
+    }
+
+    private void setUserID(Integer id){
+        this.userID = id;
+    }
+
+    public String getName(){
+        return this.name;
+    }
+
 }

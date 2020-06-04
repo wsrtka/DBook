@@ -1,14 +1,13 @@
 package DBook.project.app;
 
 import DBook.project.app.book.Book;
+import DBook.project.app.offers.Invoice;
+import DBook.project.app.offers.Offer;
 import DBook.project.app.users.User;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.neo4j.driver.AccessMode;
-import org.neo4j.driver.Driver;
-import org.neo4j.driver.Session;
-import org.neo4j.driver.SessionConfig;
+import org.neo4j.driver.*;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -27,7 +26,9 @@ public class DBookApplication {
 	public DBookApplication(){
 		this.userArrayList = new ArrayList<>();
 		driver = this.initializeDriver();
+		this.setupIds();
 	}
+
 	private Driver initializeDriver(){
 		JSONParser parser = new JSONParser();
 		JSONObject auth = new JSONObject();
@@ -55,6 +56,39 @@ public class DBookApplication {
 
 	}
 
+	private void setupIds(){
+
+		try(Session s = driver.session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
+			s.readTransaction(
+					tx -> {
+						new Book("", 0).setupIdGenerator(tx);
+						new Invoice().setupIdGenerator(tx);
+						new Offer().setupIdGenerator(tx);
+						new User("","","").setupIdGenerator(tx);
+						return 0;
+					}
+			);
+			s.writeTransaction(
+					tx -> {
+						this.setupIndex("Book", tx);
+						this.setupIndex("Invoice", tx);
+						this.setupIndex("Offer", tx);
+						this.setupIndex("User", tx);
+						return 0;
+					}
+			);
+		}
+
+	}
+
+	private void setupIndex(String className, Transaction tx){
+
+		String query = "CREATE INDEX ON :" + className + "(" + className.toLowerCase() + "id)";
+
+		tx.run(query);
+
+	}
+
 	public ArrayList<User> getUserArrayList() {
 		return userArrayList;
 	}
@@ -69,13 +103,7 @@ public class DBookApplication {
 
 		SpringApplication.run(DBookApplication.class, args);
 
-		//testowanie Book
-		try(Session s = driver.session(SessionConfig.builder().withDefaultAccessMode(AccessMode.WRITE).build())) {
-			Book b = new Book("Tytus, Romek i Atomek", new Integer("30"));
-			s.writeTransaction(b::addToDB);
-		}
-
-		System.out.println("Added book.");
+		//miejsce na dopisanie user interface kiedyś
 
 
 	}

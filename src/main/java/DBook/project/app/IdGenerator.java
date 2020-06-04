@@ -20,10 +20,20 @@ public class IdGenerator {
                 "RETURN max(id(n))";
 
         Result res = tx.run(query);
+        Record rec;
 
-        Record rec = res.next();
-
-        this.nextID = rec.get("max(id(n))").asInt() + 1;
+        if(res.hasNext()){
+            rec = res.next();
+            if(!rec.get("max(id(n))").isNull()){
+                this.nextID = rec.get("max(id(n))").asInt() + 1;
+            }
+            else{
+                this.nextID = 0;
+            }
+        }
+        else{
+            this.nextID = 0;
+        }
 
     }
 

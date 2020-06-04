@@ -68,15 +68,15 @@ public class DBookApplication {
 						return 0;
 					}
 			);
-			s.writeTransaction(
-					tx -> {
-						this.setupIndex("Book", tx);
-						this.setupIndex("Invoice", tx);
-						this.setupIndex("Offer", tx);
-						this.setupIndex("User", tx);
-						return 0;
-					}
-			);
+//			s.writeTransaction(
+//					tx -> {
+//						this.setupIndex("Book", tx);
+//						this.setupIndex("Invoice", tx);
+//						this.setupIndex("Offer", tx);
+//						this.setupIndex("User", tx);
+//						return 0;
+//					}
+//			);
 		}
 
 	}

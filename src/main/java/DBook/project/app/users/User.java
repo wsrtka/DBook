@@ -56,7 +56,7 @@ public class User implements Transactionable {
 
     @Override
     public void setupIdGenerator(Transaction tx){
-        idGenerator = new IdGenerator("Client", tx);
+        idGenerator = new IdGenerator("User", tx);
     }
 
     public HashMap<Integer, Invoice> getUsersInvoices(Transaction tx) {

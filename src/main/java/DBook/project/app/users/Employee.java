@@ -129,7 +129,6 @@ public class Employee extends User{
             book.update(tx);
         }
         ArrayList<Book> booksToBeDeleted = new ArrayList<>();
-        System.out.println(offer.getBooks().size());
         offer.getOfferBooks().forEach((k, v)->{
             if(!acceptedBooks.contains(v)){
                 v.removeFromDB(tx);
@@ -147,6 +146,14 @@ public class Employee extends User{
             ArrayList<Offer> offersToBeDeleted = new ArrayList<>();
             user.getUsersOffers(tx).forEach((k, v)->{
                 if(!v.isAccepted()){
+                    ArrayList<Book> booksToBeDeleted = new ArrayList<>();
+                    v.getOfferBooks().forEach((bk, bv)->{
+                            v.removeFromDB(tx);
+                            booksToBeDeleted.add(bv);
+                    });
+                    for(Book book: booksToBeDeleted){
+                        v.getBooks().values().remove(book);
+                    }
                     v.removeFromDB(tx);
                     offersToBeDeleted.add(v);
                 }
